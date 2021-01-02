@@ -4,7 +4,8 @@
     <!--   <span id="clock">{{ clock }}</span>
       <span id="date"> {{ dayName }} {{ currentDate }} </span> -->
       <span id="title"> רדיו רקע - אמהרית</span>
-    </header>
+<!--       {{dateFormat}}
+ -->    </header>
 
     <div>
       <iframe
@@ -40,6 +41,7 @@
         <button v-on:click="daysClick(5)" v-bind:class="{ active: (selectedDayNumber == 5) }" ><span>ה</span></button>
         <button v-on:click="daysClick(6)" v-bind:class="{ active: (selectedDayNumber == 6) }" ><span>ו</span></button>
         <button v-on:click="daysClick(7)" v-bind:class="{ active: (selectedDayNumber == 7) }" ><span>ז</span></button>
+        <input v-model="selectedPordDate" type="date"/>
       </div>
       <div id="times">
         <button v-on:click="timesClick(1)"  v-bind:class="{ active: (timeName === 'amharit') }"><span>בוקר</span></button>
@@ -67,11 +69,14 @@ export default {
       day: new Date(),
       timeName: "amharit",
       dayNumber:1,
-      selectedDay: new Date()
+      selectedDay: new Date(),
+      selectedPordDate:new Date(),
+      d:8
     };
   },
   methods: {
     daysClick: function (day) {
+      this.d = day;
       let curentDay = new Date().getDay() + 1;
       let difDay = curentDay - day;
       if (difDay === 0) this.selectedDay = new Date();
@@ -95,7 +100,10 @@ export default {
   },
   computed: {
     src: function () {
+      if(this.d > 0 && this.d < 8 )
       return `https://omny.fm/shows/${this.timeName}/${this.selectedDate}/embed`;
+      else 
+       return `https://omny.fm/shows/${this.timeName}/${this.dateFormat}/embed`;
     },
     selectedDayNumber:function(){
       return  this.selectedDay.getDay()+1;
@@ -139,6 +147,20 @@ export default {
 
       return f(h) + ":" + f(min) + ":" + f(sec);
     },
+
+    dateFormat : function(){
+      this.d = 8;
+      let date;
+        if(typeof this.selectedPordDate === "string")
+           date = new Date(this.selectedPordDate)
+      else
+          date = new Date();
+
+    return `${date.getDate()}-${
+        date.getMonth() + 1
+      }-${date.getFullYear()}`;
+      
+    }
   },
 };
 </script>
