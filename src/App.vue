@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <header id="header">
-      <span id="clock">{{ clock }}</span>
-      <span id="date"> {{ dayName }} {{ currentDate }} </span>
+    <!--   <span id="clock">{{ clock }}</span>
+      <span id="date"> {{ dayName }} {{ currentDate }} </span> -->
       <span id="title"> רדיו רקע - אמהרית</span>
     </header>
 
@@ -33,13 +33,13 @@
       </header>
       <!-- <div> <span> {{dayName}} : {{currentDate}}</span></div> -->
       <div id="days">
-        <button v-on:click="daysClick(1)" v-bind:class="{ active: (selectedDayNumber == 1) }"><span>ראשון</span></button>
-        <button v-on:click="daysClick(2)" v-bind:class="{ active: (selectedDayNumber == 2) }"><span>שני</span></button>
-        <button v-on:click="daysClick(3)" v-bind:class="{ active: (selectedDayNumber == 3) }" ><span>שלישי</span></button>
-        <button v-on:click="daysClick(4)" v-bind:class="{ active: (selectedDayNumber == 4) }"><span>רביעי</span></button>
-        <button v-on:click="daysClick(5)" v-bind:class="{ active: (selectedDayNumber == 5) }" ><span>חמישי</span></button>
-        <button v-on:click="daysClick(6)" v-bind:class="{ active: (selectedDayNumber == 6) }" ><span>שישי</span></button>
-        <button v-on:click="daysClick(7)" v-bind:class="{ active: (selectedDayNumber == 7) }" ><span>שבת</span></button>
+        <button v-on:click="daysClick(1)" v-bind:class="{ active: (selectedDayNumber == 1) }"><span>א</span></button>
+        <button v-on:click="daysClick(2)" v-bind:class="{ active: (selectedDayNumber == 2) }"><span>ב</span></button>
+        <button v-on:click="daysClick(3)" v-bind:class="{ active: (selectedDayNumber == 3) }" ><span>ג</span></button>
+        <button v-on:click="daysClick(4)" v-bind:class="{ active: (selectedDayNumber == 4) }"><span>ד</span></button>
+        <button v-on:click="daysClick(5)" v-bind:class="{ active: (selectedDayNumber == 5) }" ><span>ה</span></button>
+        <button v-on:click="daysClick(6)" v-bind:class="{ active: (selectedDayNumber == 6) }" ><span>ו</span></button>
+        <button v-on:click="daysClick(7)" v-bind:class="{ active: (selectedDayNumber == 7) }" ><span>ז</span></button>
       </div>
       <div id="times">
         <button v-on:click="timesClick(1)"  v-bind:class="{ active: (timeName === 'amharit') }"><span>בוקר</span></button>
@@ -155,20 +155,24 @@ export default {
   display: flex;
   flex-wrap: nowrap;
   background-color: aliceblue;
+    flex-direction: row-reverse;
 }
 #days button {
-  width: calc(100% / 7);
-  text-align: center;
+/*   width: calc(100% / 7);
+  text-align: center; */
+    flex-grow: 1;
 }
 
 #times {
   display: flex;
   flex-wrap: nowrap;
+  flex-direction: row-reverse;
   background-color: beige;
 }
 #times button {
-  width: calc(100% / 3);
-  text-align: center;
+/*   width: calc(100% / 3);
+  text-align: center; */
+  flex-grow: 1;
 }
 #hisbrod iframe {
   width: 100%;
@@ -180,6 +184,7 @@ export default {
   display: flex;
   justify-content: space-around;
   padding: 8px;
+    background-image: linear-gradient(to right,white,blue,white,green, yellow,red,white,blue,white);
 }
 
 #date {
@@ -189,7 +194,7 @@ export default {
 
 #title {
   font-size: xx-large;
-  color: green;
+  color: white;
 }
 
 button {
@@ -208,9 +213,5 @@ button {
   font-weight: bold;
 }
 
-@media only screen and (max-width: 600px) {
-  #header {
-    flex-direction: column-reverse;
-  }
-}
+
 </style>
