@@ -70,7 +70,7 @@ export default {
       timeName: "amharit",
       dayNumber:1,
       selectedDay: new Date(),
-      selectedPordDate:new Date(),
+      selectedPordDate:new Date().toISOString().slice(0,10),
       d:8
     };
   },
@@ -150,12 +150,7 @@ export default {
 
     dateFormat : function(){
       this.d = 8;
-      let date;
-        if(typeof this.selectedPordDate === "string")
-           date = new Date(this.selectedPordDate)
-      else
-          date = new Date();
-
+      let date = new Date(this.selectedPordDate)
     return `${date.getDate()}-${
         date.getMonth() + 1
       }-${date.getFullYear()}`;
