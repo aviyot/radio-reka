@@ -79,13 +79,21 @@ export default {
       this.d = day;
       let curentDay = new Date().getDay() + 1;
       let difDay = curentDay - day;
-      if (difDay === 0) this.selectedDay = new Date();
-      if (difDay > 0)
+      if (difDay === 0) {
+        this.selectedDay = new Date()
+        this.selectedPordDate = this.selectedDay.toISOString().slice(0,10);
+      }
+      if (difDay > 0) {
         this.selectedDay = new Date(new Date().getTime() - 86400000 * difDay);
-      if (difDay < 0)
+       this.selectedPordDate = this.selectedDay.toISOString().slice(0,10);
+      }
+      if (difDay < 0){
         this.selectedDay = new Date(
           new Date().getTime() - 86400000 * (7 + difDay)
         );
+      this.selectedPordDate = this.selectedDay.toISOString().slice(0,10);
+
+      }
     },
     timesClick: function (time) {
       if (time === 1) this.timeName = "amharit";
@@ -100,10 +108,7 @@ export default {
   },
   computed: {
     src: function () {
-      if(this.d > 0 && this.d < 8 )
-      return `https://omny.fm/shows/${this.timeName}/${this.selectedDate}/embed`;
-      else 
-       return `https://omny.fm/shows/${this.timeName}/${this.dateFormat}/embed`;
+         return `https://omny.fm/shows/${this.timeName}/${this.dateFormat}/embed`;
     },
     selectedDayNumber:function(){
       return  this.selectedDay.getDay()+1;
@@ -196,12 +201,11 @@ export default {
 }
 
 #header {
-  background-color: darkgrey;
+  background-color: black;
   text-align: center;
   display: flex;
   justify-content: space-around;
   padding: 8px;
-    background-image: linear-gradient(to right,white,blue,white,green, yellow,red,white,blue,white);
 }
 
 #date {
