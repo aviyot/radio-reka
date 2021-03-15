@@ -1,13 +1,18 @@
 <template>
   <div id="app">
     <header id="header">
-    <!--   <span id="clock">{{ clock }}</span>
-      <span id="date"> {{ dayName }} {{ currentDate }} </span> -->
-      <span id="title"> רדיו רקע - אמהרית</span>
-<!--       {{dateFormat}}
- -->    </header>
+      <!--       <span id="clock">{{ clock }}</span>
+ -->     
+        <span id="date"> {{ dayName }} {{ currentDate }} </span>
+        <span id="title"> רדיו רקע  אמהרית</span>
+    </header>
 
-    <div>
+    <div class="prod-type">
+      <button  id="past-prod-btn" v-on:click="prodPast()">תוכניות ששודרו</button>
+      <button id= "live-prod-btn" v-on:click="prodLive()">שידור ישיר</button>
+    </div>
+
+    <div id="live-prod" v-if="liveProd">
       <iframe
         src="https://kanapi.akamaized.net/Players/ByPlayer/V1/ipbc/kan-reka/hls-live"
         width="100%"
@@ -19,34 +24,76 @@
         title="רדיו רקע"
       ></iframe>
     </div>
-    <div id="hisbrod">
-      <header>
-        <span
-          style="
-            font-size: xx-large;
-            background-color: black;
-            color: white;
-            display: flex;
-            justify-content: center;
-          "
-          >שידורים שהיו</span
-        >
-      </header>
-      <!-- <div> <span> {{dayName}} : {{currentDate}}</span></div> -->
+    <div id="hisbrod" v-if="pastProd">
+      <div class="select-date">
+        <input v-model="selectedPordDate" type="date" />
+        <span>
+          <label>בחר תאריך</label>
+        </span>
+      </div>
       <div id="days">
-        <button v-on:click="daysClick(1)" v-bind:class="{ active: (selectedDayNumber == 1) }"><span>א</span></button>
-        <button v-on:click="daysClick(2)" v-bind:class="{ active: (selectedDayNumber == 2) }"><span>ב</span></button>
-        <button v-on:click="daysClick(3)" v-bind:class="{ active: (selectedDayNumber == 3) }" ><span>ג</span></button>
-        <button v-on:click="daysClick(4)" v-bind:class="{ active: (selectedDayNumber == 4) }"><span>ד</span></button>
-        <button v-on:click="daysClick(5)" v-bind:class="{ active: (selectedDayNumber == 5) }" ><span>ה</span></button>
-        <button v-on:click="daysClick(6)" v-bind:class="{ active: (selectedDayNumber == 6) }" ><span>ו</span></button>
-        <button v-on:click="daysClick(7)" v-bind:class="{ active: (selectedDayNumber == 7) }" ><span>ז</span></button>
-        <input v-model="selectedPordDate" type="date"/>
+        <button
+          v-on:click="daysClick(1)"
+          v-bind:class="{ active: selectedDayNumber == 1 }"
+        >
+          <span>א</span>
+        </button>
+        <button
+          v-on:click="daysClick(2)"
+          v-bind:class="{ active: selectedDayNumber == 2 }"
+        >
+          <span>ב</span>
+        </button>
+        <button
+          v-on:click="daysClick(3)"
+          v-bind:class="{ active: selectedDayNumber == 3 }"
+        >
+          <span>ג</span>
+        </button>
+        <button
+          v-on:click="daysClick(4)"
+          v-bind:class="{ active: selectedDayNumber == 4 }"
+        >
+          <span>ד</span>
+        </button>
+        <button
+          v-on:click="daysClick(5)"
+          v-bind:class="{ active: selectedDayNumber == 5 }"
+        >
+          <span>ה</span>
+        </button>
+        <button
+          v-on:click="daysClick(6)"
+          v-bind:class="{ active: selectedDayNumber == 6 }"
+        >
+          <span>ו</span>
+        </button>
+        <button
+          v-on:click="daysClick(7)"
+          v-bind:class="{ active: selectedDayNumber == 7 }"
+        >
+          <span>ז</span>
+        </button>
       </div>
       <div id="times">
-        <button v-on:click="timesClick(1)"  v-bind:class="{ active: (timeName === 'amharit') }"><span>בוקר</span></button>
-        <button v-on:click="timesClick(2)"  v-bind:class="{ active: (timeName === 'kan-amhari-noon')  }"><span>צהריים</span></button>
-        <button v-on:click="timesClick(3)"  v-bind:class="{ active: (timeName === 'evenign-news-amharit')  }" ><span>ערב</span></button>
+        <button
+          v-on:click="timesClick(1)"
+          v-bind:class="{ active: timeName === 'amharit' }"
+        >
+          <span>בוקר</span>
+        </button>
+        <button
+          v-on:click="timesClick(2)"
+          v-bind:class="{ active: timeName === 'kan-amhari-noon' }"
+        >
+          <span>צהריים</span>
+        </button>
+        <button
+          v-on:click="timesClick(3)"
+          v-bind:class="{ active: timeName === 'evenign-news-amharit' }"
+        >
+          <span>ערב</span>
+        </button>
       </div>
       <iframe
         id="morning"
@@ -68,10 +115,12 @@ export default {
     return {
       day: new Date(),
       timeName: "amharit",
-      dayNumber:1,
+      dayNumber: 1,
       selectedDay: new Date(),
-      selectedPordDate:new Date().toISOString().slice(0,10),
-      d:8
+      selectedPordDate: new Date().toISOString().slice(0, 10),
+      d: 8,
+      liveProd: true,
+      pastProd: false,
     };
   },
   methods: {
@@ -80,25 +129,32 @@ export default {
       let curentDay = new Date().getDay() + 1;
       let difDay = curentDay - day;
       if (difDay === 0) {
-        this.selectedDay = new Date()
-        this.selectedPordDate = this.selectedDay.toISOString().slice(0,10);
+        this.selectedDay = new Date();
+        this.selectedPordDate = this.selectedDay.toISOString().slice(0, 10);
       }
       if (difDay > 0) {
         this.selectedDay = new Date(new Date().getTime() - 86400000 * difDay);
-       this.selectedPordDate = this.selectedDay.toISOString().slice(0,10);
+        this.selectedPordDate = this.selectedDay.toISOString().slice(0, 10);
       }
-      if (difDay < 0){
+      if (difDay < 0) {
         this.selectedDay = new Date(
           new Date().getTime() - 86400000 * (7 + difDay)
         );
-      this.selectedPordDate = this.selectedDay.toISOString().slice(0,10);
-
+        this.selectedPordDate = this.selectedDay.toISOString().slice(0, 10);
       }
     },
     timesClick: function (time) {
       if (time === 1) this.timeName = "amharit";
       if (time === 2) this.timeName = "kan-amhari-noon";
       if (time === 3) this.timeName = "evenign-news-amharit";
+    },
+    prodLive: function () {
+      this.liveProd = true;
+      this.pastProd = false;
+    },
+    prodPast: function () {
+      this.liveProd = false;
+      this.pastProd = true;
     },
   },
   mounted() {
@@ -108,10 +164,10 @@ export default {
   },
   computed: {
     src: function () {
-         return `https://omny.fm/shows/${this.timeName}/${this.dateFormat}/embed`;
+      return `https://omny.fm/shows/${this.timeName}/${this.dateFormat}/embed`;
     },
-    selectedDayNumber:function(){
-      return  this.selectedDay.getDay()+1;
+    selectedDayNumber: function () {
+      return this.selectedDay.getDay() + 1;
     },
     currentDate: function () {
       let currentDate = new Date();
@@ -119,7 +175,7 @@ export default {
         currentDate.getMonth() + 1
       }-${currentDate.getFullYear()}`;
     },
-     selectedDate: function () {
+    selectedDate: function () {
       let currentDate = this.selectedDay;
       return `${currentDate.getDate()}-${
         currentDate.getMonth() + 1
@@ -153,14 +209,11 @@ export default {
       return f(h) + ":" + f(min) + ":" + f(sec);
     },
 
-    dateFormat : function(){
+    dateFormat: function () {
       this.d = 8;
-      let date = new Date(this.selectedPordDate)
-    return `${date.getDate()}-${
-        date.getMonth() + 1
-      }-${date.getFullYear()}`;
-      
-    }
+      let date = new Date(this.selectedPordDate);
+      return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+    },
   },
 };
 </script>
@@ -170,19 +223,21 @@ export default {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  margin-top: 20px;
+ padding: 8px;
+ background-color: darkgray;
+
 }
 
 #days {
   display: flex;
   flex-wrap: nowrap;
   background-color: aliceblue;
-    flex-direction: row-reverse;
+  flex-direction: row-reverse;
 }
 #days button {
-/*   width: calc(100% / 7);
+  /*   width: calc(100% / 7);
   text-align: center; */
-    flex-grow: 1;
+  flex-grow: 1;
 }
 
 #times {
@@ -192,7 +247,7 @@ export default {
   background-color: beige;
 }
 #times button {
-/*   width: calc(100% / 3);
+  /*   width: calc(100% / 3);
   text-align: center; */
   flex-grow: 1;
 }
@@ -201,21 +256,21 @@ export default {
 }
 
 #header {
-  background-color: black;
   text-align: center;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   padding: 8px;
+  background-color: lightgray;
+  margin-bottom: 10px;
+  box-shadow: 2px 2px #888888;
 }
 
 #date {
   font-size: xx-large;
-  color: yellow;
 }
 
 #title {
   font-size: xx-large;
-  color: white;
 }
 
 button {
@@ -230,9 +285,50 @@ button {
 
 .active {
   background-color: blue;
-  color:white;
+  color: white;
   font-weight: bold;
 }
 
+.prod-type {
+  display: flex;
+  color: white;
+  justify-content: space-around;
+}
 
+.prod-type button {
+  flex-grow: 1;
+  font-size: x-large;
+  padding: 5px;
+}
+
+.select-date {
+  font-size: x-large;
+  display: flex;
+  justify-content: space-between;
+}
+
+.select-date input {
+  width: 60%;
+  text-align: left;
+  font-size: x-large;
+}
+
+.select-date label {
+  text-align: left;
+}
+
+#live-prod-btn{
+  background-color: black;
+  color: whitesmoke;
+}
+
+#past-prod-btn{
+   background-color: darkgray;
+}
+
+#live-prod {
+  background-color: black;
+  padding: 8px;
+  
+}
 </style>
