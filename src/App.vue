@@ -2,14 +2,14 @@
   <div id="app">
     <header id="header">
       <!--       <span id="clock">{{ clock }}</span>
- -->     
-        <span id="date"> {{ dayName }} {{ currentDate }} </span>
-        <span id="title"> רדיו רקע  אמהרית</span>
+ -->
+      <span id="date"> {{ dayName }} {{ currentDate }} </span>
+      <span id="title"> רדיו רקע אמהרית</span>
     </header>
 
     <div class="prod-type">
-      <button  id="past-prod-btn" v-on:click="prodPast()">תוכניות ששודרו</button>
-      <button id= "live-prod-btn" v-on:click="prodLive()">שידור ישיר</button>
+      <button id="past-prod-btn" v-on:click="prodPast()">תוכניות ששודרו</button>
+      <button id="live-prod-btn" v-on:click="prodLive()">שידור ישיר</button>
     </div>
 
     <div id="live-prod" v-if="liveProd">
@@ -25,85 +25,44 @@
       ></iframe>
     </div>
     <div id="hisbrod" v-if="pastProd">
-      <div class="select-date">
-        <input v-model="selectedPordDate" type="date" />
-        <span>
-          <label>בחר תאריך</label>
-        </span>
+      <div id="select-prod-control" v-if="pastProdControlHide">
+        <div class="select-date">
+          <input v-model="selectedPordDate" type="date" />
+          <span>
+            <label>בחר תאריך</label>
+          </span>
+        </div>
+        <div id="days">
+          <button
+            v-for="day in 7"
+            :key="day"
+            v-on:click="daysClick(day)"
+            v-bind:class="{ active: selectedDayNumber == day }"
+          >
+            <span>{{ day | formatDayName }}</span>
+          </button>
+        </div>
+        <div id="times">
+          <button
+            v-for="time in prodTimes"
+            :key="time"
+            v-on:click="timesClick(time)"
+            v-bind:class="{ active: timeName === time }"
+          >
+            <span>{{ time | formatName }}</span>
+          </button>
+        </div>
       </div>
-      <div id="days">
-        <button
-          v-on:click="daysClick(1)"
-          v-bind:class="{ active: selectedDayNumber == 1 }"
+      <div id="iframe">
+        <iframe
+          id="morning"
+          width="80%"
+          frameborder="0"
+          scrolling="no"
+          v-bind:src="src"
         >
-          <span>א</span>
-        </button>
-        <button
-          v-on:click="daysClick(2)"
-          v-bind:class="{ active: selectedDayNumber == 2 }"
-        >
-          <span>ב</span>
-        </button>
-        <button
-          v-on:click="daysClick(3)"
-          v-bind:class="{ active: selectedDayNumber == 3 }"
-        >
-          <span>ג</span>
-        </button>
-        <button
-          v-on:click="daysClick(4)"
-          v-bind:class="{ active: selectedDayNumber == 4 }"
-        >
-          <span>ד</span>
-        </button>
-        <button
-          v-on:click="daysClick(5)"
-          v-bind:class="{ active: selectedDayNumber == 5 }"
-        >
-          <span>ה</span>
-        </button>
-        <button
-          v-on:click="daysClick(6)"
-          v-bind:class="{ active: selectedDayNumber == 6 }"
-        >
-          <span>ו</span>
-        </button>
-        <button
-          v-on:click="daysClick(7)"
-          v-bind:class="{ active: selectedDayNumber == 7 }"
-        >
-          <span>ז</span>
-        </button>
+        </iframe>
       </div>
-      <div id="times">
-        <button
-          v-on:click="timesClick(1)"
-          v-bind:class="{ active: timeName === 'amharit' }"
-        >
-          <span>בוקר</span>
-        </button>
-        <button
-          v-on:click="timesClick(2)"
-          v-bind:class="{ active: timeName === 'kan-amhari-noon' }"
-        >
-          <span>צהריים</span>
-        </button>
-        <button
-          v-on:click="timesClick(3)"
-          v-bind:class="{ active: timeName === 'evenign-news-amharit' }"
-        >
-          <span>ערב</span>
-        </button>
-      </div>
-      <iframe
-        id="morning"
-        width="100%"
-        frameborder="0"
-        height=""
-        scrolling="no"
-        v-bind:src="src"
-      >
-      </iframe>
     </div>
   </div>
 </template>
@@ -121,6 +80,8 @@ export default {
       d: 8,
       liveProd: true,
       pastProd: false,
+      pastProdControlHide: false,
+      prodTimes: ["amharit", "kan-amhari-noon", "evenign-news-amharit"],
     };
   },
   methods: {
@@ -144,9 +105,7 @@ export default {
       }
     },
     timesClick: function (time) {
-      if (time === 1) this.timeName = "amharit";
-      if (time === 2) this.timeName = "kan-amhari-noon";
-      if (time === 3) this.timeName = "evenign-news-amharit";
+      this.timeName = time;
     },
     prodLive: function () {
       this.liveProd = true;
@@ -155,12 +114,56 @@ export default {
     prodPast: function () {
       this.liveProd = false;
       this.pastProd = true;
+      this.pastProdControlHide = true;
+    },
+    onPlayPastProd: function () {
+      console.log(this.pastProdControlHide);
+      this.pastProdControlHide = false;
+    },
+    selectProdTime: function () {
+      let currentTime = new Date().getTime();
+      //"amharit","kan-amhari-noon","evenign-news-amharit";
+      //6:15 - 14:00
+
+      let morningRangeStart = new Date().setHours(6, 15);
+      let morningRangeEnd = new Date().setHours(14);
+
+      let noonRangeStart = new Date().setHours(14);
+      let noonRangeEnd = new Date().setHours(20);
+
+      let eveningRangeStart = new Date().setHours(20);
+      let eveningRangeEnd = new Date().setHours(30,15);
+
+      if (currentTime >= morningRangeStart && currentTime <= morningRangeEnd)
+        this.timeName = this.prodTimes[0];
+      if (currentTime >= noonRangeStart && currentTime <= noonRangeEnd)
+        this.timeName = this.prodTimes[1];
+
+      if (currentTime >= eveningRangeStart && currentTime <= eveningRangeEnd)
+        this.timeName = this.prodTimes[2];
+    },
+  },
+  filters: {
+    formatName: function (value) {
+      if (value == "amharit") return "בוקר";
+      if (value == "kan-amhari-noon") return "צהריים";
+      if (value == "evenign-news-amharit") return "ערב";
+    },
+    formatDayName: function (value) {
+      if (value == 1) return "ראשון";
+      if (value == 2) return "שני";
+      if (value == 3) return "שלישי";
+      if (value == 4) return "רביעי";
+      if (value == 5) return "חמישי";
+      if (value == 6) return "שישי";
+      if (value == 7) return "שבת";
     },
   },
   mounted() {
     setInterval(() => {
       this.day = new Date();
-    }, 1000);
+    }, 60000);
+    this.selectProdTime();
   },
   computed: {
     src: function () {
@@ -180,11 +183,6 @@ export default {
       return `${currentDate.getDate()}-${
         currentDate.getMonth() + 1
       }-${currentDate.getFullYear()}`;
-    },
-    timeNameHeb: function () {
-      if (this.time == "amharit") return "בוקר";
-      if (this.time == "kan-amhari-noon") return "צהריים";
-      if (this.time == "evenign-news-amharit") return "ערב";
     },
     dayName: function () {
       this.dayNumber = this.day.getDay();
@@ -219,13 +217,15 @@ export default {
 </script>
 
 <style>
+body {
+  margin: 0px 2px;
+}
 #hisbrod {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
- padding: 8px;
- background-color: darkgray;
-
+  padding: 8px;
+  background-color: darkgray;
 }
 
 #days {
@@ -263,14 +263,7 @@ export default {
   background-color: lightgray;
   margin-bottom: 10px;
   box-shadow: 2px 2px #888888;
-}
-
-#date {
-  font-size: xx-large;
-}
-
-#title {
-  font-size: xx-large;
+  font-size: x-large;
 }
 
 button {
@@ -308,7 +301,6 @@ button {
 }
 
 .select-date input {
-  width: 60%;
   text-align: left;
   font-size: x-large;
 }
@@ -317,18 +309,39 @@ button {
   text-align: left;
 }
 
-#live-prod-btn{
+#live-prod-btn {
   background-color: black;
   color: whitesmoke;
 }
 
-#past-prod-btn{
-   background-color: darkgray;
+#past-prod-btn {
+  background-color: darkgray;
 }
 
 #live-prod {
   background-color: black;
   padding: 8px;
-  
 }
+
+#iframe-div {
+  position: relative;
+}
+
+/* #iframe-cover {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: yellowgreen;
+}
+
+#iframe {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: red;
+} */
 </style>
