@@ -3,8 +3,10 @@
     <header id="header">
       <!--       <span id="clock">{{ clock }}</span>
  -->
-      <span id="date"> {{ dayName }} {{ currentDate }} </span>
+      <span id="date"> {{ currentDate }}</span>
+      <span id="day"> {{ dayName }}  </span>
       <span id="title"> רדיו רקע אמהרית</span>
+      
     </header>
 
     <div class="prod-type">
@@ -221,6 +223,9 @@ export default {
   box-sizing: border-box;
 }
 
+body {
+  margin: 0px;
+}
 
 #hisbrod {
   display: flex;
@@ -264,8 +269,9 @@ export default {
   padding: 8px;
   background-color: lightgray;
   margin-bottom: 10px;
-  box-shadow: 2px 2px #888888;
+  /* box-shadow: 8px 8px black; */
   font-size: x-large;
+   background-image: linear-gradient(to right,white,blue,white);
 }
 
 button {
@@ -329,6 +335,18 @@ button {
   position: relative;
 }
 
+#date {
+color:red;
+
+}
+
+#title {
+color : green;
+}
+
+#day {
+ color:yellow;
+}
 /* #iframe-cover {
   position: absolute;
   width: 100%;
