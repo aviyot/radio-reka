@@ -170,7 +170,7 @@ export default {
       return `https://omny.fm/shows/${this.timeName}/${this.dateFormat}/embed`;
     },
     selectedDayNumber: function () {
-      return this.selectedDay.getDay() + 1;
+      return new Date(this.selectedPordDate).getDay() + 1;
     },
     currentDate: function () {
       let currentDate = new Date();
