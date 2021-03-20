@@ -150,13 +150,13 @@ export default {
       if (value == "evenign-news-amharit") return "ערב";
     },
     formatDayName: function (value) {
-      if (value == 1) return "ראשון";
-      if (value == 2) return "שני";
-      if (value == 3) return "שלישי";
-      if (value == 4) return "רביעי";
-      if (value == 5) return "חמישי";
-      if (value == 6) return "שישי";
-      if (value == 7) return "שבת";
+      if (value == 1) return "א";
+      if (value == 2) return "ב";
+      if (value == 3) return "ג";
+      if (value == 4) return "ד";
+      if (value == 5) return "ה";
+      if (value == 6) return "ו";
+      if (value == 7) return "ז";
     },
   },
   mounted() {
@@ -217,9 +217,11 @@ export default {
 </script>
 
 <style>
-body {
-  margin: 0px 2px;
+* {
+  box-sizing: border-box;
 }
+
+
 #hisbrod {
   display: flex;
   flex-direction: column;
