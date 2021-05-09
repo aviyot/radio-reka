@@ -15,7 +15,10 @@
     </div>
 
     <div id="live-prod" v-if="liveProd">
-      <iframe
+        <iframe src="https://www.dailymotion.com/embed/video/x7yx60p?autoplay=1" width="100%" height="315" frameborder="0"
+    allow="encrypted-media"></iframe>
+  <!--     <iframe
+         /* iframe not working:chenged */
         src="https://kanapi.akamaized.net/Players/ByPlayer/V1/ipbc/kan-reka/hls-live"
         width="100%"
         frameborder="0"
@@ -24,7 +27,7 @@
         allow="accelerometer; autoplay; "
         allowfullscreen
         title="רדיו רקע"
-      ></iframe>
+      ></iframe> -->
     </div>
     <div id="hisbrod" v-if="pastProd">
       <div id="select-prod-control" v-if="pastProdControlHide">
