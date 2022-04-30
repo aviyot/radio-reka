@@ -1,35 +1,18 @@
 <template>
   <div id="app">
     <header id="header">
-      <!--       <span id="clock">{{ clock }}</span>
- -->
+
       <span id="date"> {{ currentDate }}</span>
-      <span id="day"> {{ dayName }}  </span>
+      <span id="day"> {{ dayName }} </span>
       <span id="title"> רדיו רקע אמהרית</span>
-      
+
     </header>
-
-    <div class="prod-type">
-      <button id="past-prod-btn" v-on:click="prodPast()">תוכניות ששודרו</button>
-      <button id="live-prod-btn" v-on:click="prodLive()">שידור ישיר</button>
+    <div class="iframe-warper">
+      <iframe src="https://www.dailymotion.com/embed/video/x7yx60p?autoplay=1" allow="encrypted-media"></iframe>
+      <iframe id="morning" scrolling="no" v-bind:src="src">
+      </iframe>
     </div>
-
-    <div id="live-prod" v-if="liveProd">
-        <iframe src="https://www.dailymotion.com/embed/video/x7yx60p?autoplay=1" width="100%" height="315" frameborder="0"
-    allow="encrypted-media"></iframe>
-  <!--     <iframe
-         /* iframe not working:chenged */
-        src="https://kanapi.akamaized.net/Players/ByPlayer/V1/ipbc/kan-reka/hls-live"
-        width="100%"
-        frameborder="0"
-        height=""
-        scrolling="no"
-        allow="accelerometer; autoplay; "
-        allowfullscreen
-        title="רדיו רקע"
-      ></iframe> -->
-    </div>
-    <div id="hisbrod" v-if="pastProd">
+    <div id="hisbrod">
       <div id="select-prod-control" v-if="pastProdControlHide">
         <div class="select-date">
           <input v-model="selectedPordDate" type="date" />
@@ -38,36 +21,19 @@
           </span>
         </div>
         <div id="days">
-          <button
-            v-for="day in 7"
-            :key="day"
-            v-on:click="daysClick(day)"
-            v-bind:class="{ active: selectedDayNumber == day }"
-          >
+          <button v-for="day in 7" :key="day" v-on:click="daysClick(day)"
+            v-bind:class="{ active: selectedDayNumber == day }">
             <span>{{ day | formatDayName }}</span>
           </button>
         </div>
         <div id="times">
-          <button
-            v-for="time in prodTimes"
-            :key="time"
-            v-on:click="timesClick(time)"
-            v-bind:class="{ active: timeName === time }"
-          >
+          <button v-for="time in prodTimes" :key="time" v-on:click="timesClick(time)"
+            v-bind:class="{ active: timeName === time }">
             <span>{{ time | formatName }}</span>
           </button>
         </div>
       </div>
-      <div id="iframe">
-        <iframe
-          id="morning"
-          width="80%"
-          frameborder="0"
-          scrolling="no"
-          v-bind:src="src"
-        >
-        </iframe>
-      </div>
+
     </div>
   </div>
 </template>
@@ -84,8 +50,8 @@ export default {
       selectedPordDate: new Date().toISOString().slice(0, 10),
       d: 8,
       liveProd: true,
-      pastProd: false,
-      pastProdControlHide: false,
+      pastProd: true,
+      pastProdControlHide: true,
       prodTimes: ["amharit", "kan-amhari-noon", "evenign-news-amharit"],
     };
   },
@@ -137,7 +103,7 @@ export default {
       let noonRangeEnd = new Date().setHours(20);
 
       let eveningRangeStart = new Date().setHours(20);
-      let eveningRangeEnd = new Date().setHours(30,15);
+      let eveningRangeEnd = new Date().setHours(30, 15);
 
       if (currentTime >= morningRangeStart && currentTime <= morningRangeEnd)
         this.timeName = this.prodTimes[0];
@@ -179,15 +145,13 @@ export default {
     },
     currentDate: function () {
       let currentDate = new Date();
-      return `${currentDate.getDate()}-${
-        currentDate.getMonth() + 1
-      }-${currentDate.getFullYear()}`;
+      return `${currentDate.getDate()}-${currentDate.getMonth() + 1
+        }-${currentDate.getFullYear()}`;
     },
     selectedDate: function () {
       let currentDate = this.selectedDay;
-      return `${currentDate.getDate()}-${
-        currentDate.getMonth() + 1
-      }-${currentDate.getFullYear()}`;
+      return `${currentDate.getDate()}-${currentDate.getMonth() + 1
+        }-${currentDate.getFullYear()}`;
     },
     dayName: function () {
       this.dayNumber = this.day.getDay();
@@ -244,6 +208,7 @@ body {
   background-color: aliceblue;
   flex-direction: row-reverse;
 }
+
 #days button {
   /*   width: calc(100% / 7);
   text-align: center; */
@@ -256,14 +221,14 @@ body {
   flex-direction: row-reverse;
   background-color: beige;
 }
+
 #times button {
   /*   width: calc(100% / 3);
   text-align: center; */
   flex-grow: 1;
 }
-#hisbrod iframe {
-  width: 100%;
-}
+
+
 
 #header {
   text-align: center;
@@ -272,9 +237,8 @@ body {
   padding: 8px;
   background-color: lightgray;
   margin-bottom: 10px;
-  /* box-shadow: 8px 8px black; */
   font-size: x-large;
-   background-image: linear-gradient(to right,white,blue,white);
+  background-image: linear-gradient(to right, white, blue, white);
 }
 
 button {
@@ -321,50 +285,39 @@ button {
 }
 
 #live-prod-btn {
-  background-color: black;
   color: whitesmoke;
 }
 
 #past-prod-btn {
-  background-color: darkgray;
+  color: whitesmoke;
 }
 
-#live-prod {
-  background-color: black;
-  padding: 8px;
-}
 
 #iframe-div {
   position: relative;
 }
 
 #date {
-color:red;
+  color: red;
 
 }
 
 #title {
-color : green;
+  color: green;
 }
 
 #day {
- color:yellow;
-}
-/* #iframe-cover {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-color: yellowgreen;
+  color: yellow;
 }
 
-#iframe {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-color: red;
-} */
+
+.iframe-warper {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.iframe-warper iframe {
+  flex-grow: 1;
+}
 </style>
