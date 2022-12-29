@@ -1,39 +1,53 @@
 <template>
   <div id="app">
     <header id="header">
-
       <span id="date"> {{ currentDate }}</span>
       <span id="day"> {{ dayName }} </span>
       <span id="title"> רדיו רקע אמהרית</span>
-
     </header>
-    <div class="iframe-warper">
-      <iframe src="https://www.dailymotion.com/embed/video/x7yx60p?autoplay=1" allow="encrypted-media"></iframe>
-      <iframe id="morning" scrolling="no" v-bind:src="src">
-      </iframe>
-    </div>
-    <div id="hisbrod">
-      <div id="select-prod-control" v-if="pastProdControlHide">
-        <div class="select-date">
-          <input v-model="selectedPordDate" type="date" />
-          <span>
-            <label>בחר תאריך</label>
-          </span>
-        </div>
-        <div id="days">
-          <button v-for="day in 7" :key="day" v-on:click="daysClick(day)"
-            v-bind:class="{ active: selectedDayNumber == day }">
-            <span>{{ day | formatDayName }}</span>
-          </button>
-        </div>
-        <div id="times">
-          <button v-for="time in prodTimes" :key="time" v-on:click="timesClick(time)"
-            v-bind:class="{ active: timeName === time }">
-            <span>{{ time | formatName }}</span>
-          </button>
+    <div style="display: grid; grid-template-rows: 70% 30%;">
+      <div class="online_prod" style="text-align: center;">
+        <!-- not work -->
+        <!-- <iframe src="https://www.dailymotion.com/embed/video/x7yx60p?autoplay=1" allow="encrypted-media"></iframe>
+ -->
+        <iframe
+          width="100%"
+          height="100%"
+          src="https://www.kan.org.il/radio/player.aspx?stationId=10&video_id=1_8gp8l2wf"
+        ></iframe>
+      </div>
+      <div style="display: grid;">
+        <iframe id="morning" scrolling="no" v-bind:src="src" width="100%">
+        </iframe>
+        <div id="select-prod-control" v-if="pastProdControlHide">
+          <div class="select-date">
+            <input v-model="selectedPordDate" type="date" />
+            <span>
+              <label>בחר תאריך</label>
+            </span>
+          </div>
+          <div id="days">
+            <button
+              v-for="day in 7"
+              :key="day"
+              v-on:click="daysClick(day)"
+              v-bind:class="{ active: selectedDayNumber == day }"
+            >
+              <span>{{ day | formatDayName }}</span>
+            </button>
+          </div>
+          <div id="times">
+            <button
+              v-for="time in prodTimes"
+              :key="time"
+              v-on:click="timesClick(time)"
+              v-bind:class="{ active: timeName === time }"
+            >
+              <span>{{ time | formatName }}</span>
+            </button>
+          </div>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -41,7 +55,7 @@
 <script>
 export default {
   name: "App",
-  data: function () {
+  data: function() {
     return {
       day: new Date(),
       timeName: "amharit",
@@ -56,7 +70,7 @@ export default {
     };
   },
   methods: {
-    daysClick: function (day) {
+    daysClick: function(day) {
       this.d = day;
       let curentDay = new Date().getDay() + 1;
       let difDay = curentDay - day;
@@ -75,23 +89,23 @@ export default {
         this.selectedPordDate = this.selectedDay.toISOString().slice(0, 10);
       }
     },
-    timesClick: function (time) {
+    timesClick: function(time) {
       this.timeName = time;
     },
-    prodLive: function () {
+    prodLive: function() {
       this.liveProd = true;
       this.pastProd = false;
     },
-    prodPast: function () {
+    prodPast: function() {
       this.liveProd = false;
       this.pastProd = true;
       this.pastProdControlHide = true;
     },
-    onPlayPastProd: function () {
+    onPlayPastProd: function() {
       console.log(this.pastProdControlHide);
       this.pastProdControlHide = false;
     },
-    selectProdTime: function () {
+    selectProdTime: function() {
       let currentTime = new Date().getTime();
       //"amharit","kan-amhari-noon","evenign-news-amharit";
       //6:15 - 14:00
@@ -115,12 +129,12 @@ export default {
     },
   },
   filters: {
-    formatName: function (value) {
+    formatName: function(value) {
       if (value == "amharit") return "בוקר";
       if (value == "kan-amhari-noon") return "צהריים";
       if (value == "evenign-news-amharit") return "ערב";
     },
-    formatDayName: function (value) {
+    formatDayName: function(value) {
       if (value == 1) return "א";
       if (value == 2) return "ב";
       if (value == 3) return "ג";
@@ -137,23 +151,23 @@ export default {
     this.selectProdTime();
   },
   computed: {
-    src: function () {
+    src: function() {
       return `https://omny.fm/shows/${this.timeName}/${this.dateFormat}/embed`;
     },
-    selectedDayNumber: function () {
+    selectedDayNumber: function() {
       return new Date(this.selectedPordDate).getDay() + 1;
     },
-    currentDate: function () {
+    currentDate: function() {
       let currentDate = new Date();
-      return `${currentDate.getDate()}-${currentDate.getMonth() + 1
-        }-${currentDate.getFullYear()}`;
+      return `${currentDate.getDate()}-${currentDate.getMonth() +
+        1}-${currentDate.getFullYear()}`;
     },
-    selectedDate: function () {
+    selectedDate: function() {
       let currentDate = this.selectedDay;
-      return `${currentDate.getDate()}-${currentDate.getMonth() + 1
-        }-${currentDate.getFullYear()}`;
+      return `${currentDate.getDate()}-${currentDate.getMonth() +
+        1}-${currentDate.getFullYear()}`;
     },
-    dayName: function () {
+    dayName: function() {
       this.dayNumber = this.day.getDay();
       if (this.dayNumber == 0) return "ראשון";
       if (this.dayNumber == 1) return "שני";
@@ -163,7 +177,7 @@ export default {
       if (this.dayNumber == 5) return "שישי";
       if (this.dayNumber == 6) return "שבת";
     },
-    clock: function () {
+    clock: function() {
       function f(val) {
         if (val < 10) return "0" + val;
         else return val;
@@ -176,7 +190,7 @@ export default {
       return f(h) + ":" + f(min) + ":" + f(sec);
     },
 
-    dateFormat: function () {
+    dateFormat: function() {
       this.d = 8;
       let date = new Date(this.selectedPordDate);
       return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
@@ -190,16 +204,10 @@ export default {
   box-sizing: border-box;
 }
 
-body {
+body,
+html {
   margin: 0px;
-}
-
-#hisbrod {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  padding: 8px;
-  background-color: darkgray;
+  height: 100%;
 }
 
 #days {
@@ -227,8 +235,6 @@ body {
   text-align: center; */
   flex-grow: 1;
 }
-
-
 
 #header {
   text-align: center;
@@ -292,14 +298,12 @@ button {
   color: whitesmoke;
 }
 
-
 #iframe-div {
   position: relative;
 }
 
 #date {
   color: red;
-
 }
 
 #title {
@@ -308,16 +312,5 @@ button {
 
 #day {
   color: yellow;
-}
-
-
-.iframe-warper {
-  display: flex;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
-}
-
-.iframe-warper iframe {
-  flex-grow: 1;
 }
 </style>
