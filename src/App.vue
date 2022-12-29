@@ -207,7 +207,6 @@ export default {
 body,
 html {
   margin: 0px;
-  height: 100%;
 }
 
 #days {
