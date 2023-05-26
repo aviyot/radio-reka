@@ -5,17 +5,7 @@
       <span id="day"> {{ dayName }} </span>
       <span id="title"> רדיו רקע אמהרית</span>
     </header>
-    <div style="display: grid; grid-template-rows: 70% 30%;">
-      <div class="online_prod" style="text-align: center;">
-        <!-- not work -->
-        <!-- <iframe src="https://www.dailymotion.com/embed/video/x7yx60p?autoplay=1" allow="encrypted-media"></iframe>
- -->
-        <iframe
-          width="100%"
-          height="100%"
-          src="https://www.kan.org.il/radio/player.aspx?stationId=10&video_id=1_8gp8l2wf"
-        ></iframe>
-      </div>
+    <div>
       <div style="display: grid;">
         <iframe id="morning" scrolling="no" v-bind:src="src" width="100%">
         </iframe>
@@ -241,7 +231,6 @@ html {
   justify-content: space-between;
   padding: 8px;
   background-color: lightgray;
-  margin-bottom: 10px;
   font-size: x-large;
   background-image: linear-gradient(to right, white, blue, white);
 }
