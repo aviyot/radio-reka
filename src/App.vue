@@ -13,7 +13,7 @@
             controls=""
             autoplay="autoplay"
             width="100%"
-            src="https://playerservices.streamtheworld.com/api/livestream-redirect/KAN_REKA.mp3?dist=radio2net"
+            src="https://playerservices.streamtheworld.com/api/livestream-redirect/KAN_REKA.mp3"
           ></audio>
         </div>
         <iframe id="morning" scrolling="no" v-bind:src="src" width="100%">
