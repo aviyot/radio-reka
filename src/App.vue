@@ -7,6 +7,15 @@
     </header>
     <div>
       <div style="display: grid;">
+        <div class="player-wrapper">
+          <audio
+            class="audio_player"
+            controls=""
+            autoplay="autoplay"
+            width="100%"
+            src="https://playerservices.streamtheworld.com/api/livestream-redirect/KAN_REKA.mp3?dist=radio2net"
+          ></audio>
+        </div>
         <iframe id="morning" scrolling="no" v-bind:src="src" width="100%">
         </iframe>
         <div id="select-prod-control" v-if="pastProdControlHide">
@@ -300,5 +309,16 @@ button {
 
 #day {
   color: yellow;
+}
+
+.audio_player {
+  width: 100%;
+}
+.player-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  background-color: silver;
+  background-image: linear-gradient(green, yellow, red);
 }
 </style>
