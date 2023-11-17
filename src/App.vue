@@ -1,50 +1,80 @@
 <template>
   <div id="app">
-    <header id="header">
-      <span id="date"> {{ currentDate }}</span>
-      <span id="day"> {{ dayName }} </span>
-      <span id="title"> רדיו רקע אמהרית</span>
+    <header
+      style="display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: lightgray;
+  font-size: x-large;
+  background-image: linear-gradient(to left, green, yellow, red);
+  height: 3rem;
+  "
+    >
+      <span
+        style="flex: 1;
+      text-align: center;
+      color: white;"
+      >
+        {{ currentDate }}</span
+      >
+      <span
+        style="  flex: 1;
+  text-align: center;
+  color:blue"
+      >
+        {{ dayName }}
+      </span>
+      <span
+        style="flex: 1;
+  text-align: center;  color: white;
+  white-space: nowrap;"
+      >
+        רדיו רקע אמהרית</span
+      >
     </header>
-    <div>
-      <div style="display: grid;">
-        <div class="player-wrapper">
-          <audio
-            class="audio_player"
-            controls=""
-            autoplay="autoplay"
-            width="100%"
-            src="https://playerservices.streamtheworld.com/api/livestream-redirect/KAN_REKA.mp3"
-          ></audio>
-        </div>
-        <iframe id="morning" scrolling="no" v-bind:src="src" width="100%">
-        </iframe>
-        <div id="select-prod-control" v-if="pastProdControlHide">
-          <div class="select-date">
-            <input v-model="selectedPordDate" type="date" />
-            <span>
-              <label>בחר תאריך</label>
-            </span>
-          </div>
-          <div id="days">
+    <div style="display: flex;flex-wrap: wrap">
+      <div
+        style="flex:1;display: flex; justify-content: center;
+  padding: 24px;
+  background-image: linear-gradient(to right, white, blue, white);"
+      >
+        <audio
+          style="text-align: center;
+          justify-content:center;"
+          width="100%"
+          controls=""
+          src="https://playerservices.streamtheworld.com/api/livestream-redirect/KAN_REKA.mp3"
+        ></audio>
+      </div>
+      <div style="flex:1;display: flex;flex-direction: column;">
+        <iframe id="morning" scrolling="no" v-bind:src="src"> </iframe>
+        <div style="display: flex;height: 2rem;" v-if="pastProdControlHide">
+          <input v-model="selectedPordDate" type="date" style="flex:1" />
+          <!--     <div
+            style="display: flex;
+  flex-wrap: nowrap;
+  background-color: aliceblue;
+  flex-direction: row-reverse;"
+          >
             <button
               v-for="day in 7"
               :key="day"
+              style="flex-grow: 1;"
               v-on:click="daysClick(day)"
               v-bind:class="{ active: selectedDayNumber == day }"
             >
               <span>{{ day | formatDayName }}</span>
             </button>
-          </div>
-          <div id="times">
-            <button
-              v-for="time in prodTimes"
-              :key="time"
-              v-on:click="timesClick(time)"
-              v-bind:class="{ active: timeName === time }"
-            >
-              <span>{{ time | formatName }}</span>
-            </button>
-          </div>
+          </div> -->
+
+          <button
+            v-for="time in prodTimes"
+            style="flex: 1;"
+            :key="time"
+            v-on:click="timesClick(time)"
+          >
+            <span>{{ time | formatName }}</span>
+          </button>
         </div>
       </div>
     </div>
@@ -158,8 +188,8 @@ export default {
     },
     currentDate: function() {
       let currentDate = new Date();
-      return `${currentDate.getDate()}-${currentDate.getMonth() +
-        1}-${currentDate.getFullYear()}`;
+      return `${currentDate.getDate()}.${currentDate.getMonth() +
+        1}.${currentDate.getFullYear()}`;
     },
     selectedDate: function() {
       let currentDate = this.selectedDay;
@@ -198,127 +228,4 @@ export default {
 };
 </script>
 
-<style>
-* {
-  box-sizing: border-box;
-}
-
-body,
-html {
-  margin: 0px;
-}
-
-#days {
-  display: flex;
-  flex-wrap: nowrap;
-  background-color: aliceblue;
-  flex-direction: row-reverse;
-}
-
-#days button {
-  /*   width: calc(100% / 7);
-  text-align: center; */
-  flex-grow: 1;
-}
-
-#times {
-  display: flex;
-  flex-wrap: nowrap;
-  flex-direction: row-reverse;
-  background-color: beige;
-}
-
-#times button {
-  /*   width: calc(100% / 3);
-  text-align: center; */
-  flex-grow: 1;
-}
-
-#header {
-  text-align: center;
-  display: flex;
-  justify-content: space-between;
-  padding: 8px;
-  background-color: lightgray;
-  font-size: x-large;
-  background-image: linear-gradient(to right, white, blue, white);
-}
-
-button {
-  padding: 4px;
-  font-size: large;
-}
-
-#clock {
-  font-size: xx-large;
-  color: red;
-}
-
-.active {
-  background-color: blue;
-  color: white;
-  font-weight: bold;
-}
-
-.prod-type {
-  display: flex;
-  color: white;
-  justify-content: space-around;
-}
-
-.prod-type button {
-  flex-grow: 1;
-  font-size: x-large;
-  padding: 5px;
-}
-
-.select-date {
-  font-size: x-large;
-  display: flex;
-  justify-content: space-between;
-}
-
-.select-date input {
-  text-align: left;
-  font-size: x-large;
-}
-
-.select-date label {
-  text-align: left;
-}
-
-#live-prod-btn {
-  color: whitesmoke;
-}
-
-#past-prod-btn {
-  color: whitesmoke;
-}
-
-#iframe-div {
-  position: relative;
-}
-
-#date {
-  color: red;
-}
-
-#title {
-  color: green;
-}
-
-#day {
-  color: yellow;
-}
-
-.audio_player {
-  width: 100%;
-}
-.player-wrapper {
-  display: flex;
-  justify-content: center;
-  padding: 24px;
-  background-color: silver;
-  background-image: linear-gradient(green, yellow, red);
-}
-</style>
+<style scoped></style>
