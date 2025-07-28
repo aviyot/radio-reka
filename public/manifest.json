@@ -1,0 +1,102 @@
+{
+  "name": "רדיו רקע אמהרית",
+  "short_name": "רדיו רקע",
+  "description": "רדיו רקע אמהרית - שידור חי ותוכניות מוקלטות",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#007bff",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "categories": [
+    "entertainment",
+    "music",
+    "news"
+  ],
+  "lang": "he",
+  "dir": "rtl",
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "display_override": [
+    "window-controls-overlay",
+    "standalone"
+  ],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+radio",
+      "url": "/?stream=%s"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/img/icons/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/img/icons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/img/icons/android-chrome-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/img/icons/android-chrome-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/img/icons/apple-icon-180x180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/img/icons/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/img/icons/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "שידור חי",
+      "short_name": "חי",
+      "description": "פתח שידור חי",
+      "url": "/?live=true",
+      "icons": [
+        {
+          "src": "/img/icons/android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "ארכיון",
+      "short_name": "ארכיון",
+      "description": "פתח ארכיון תוכניות",
+      "url": "/?archive=true",
+      "icons": [
+        {
+          "src": "/img/icons/android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

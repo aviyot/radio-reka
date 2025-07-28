@@ -1,25 +1,26 @@
 {
-  "name": "reka-amharit",
+  "name": "reka-amharit-nextjs",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "core-js": "^3.6.5",
-    "register-service-worker": "^1.7.1",
-    "vue": "^2.6.11"
+    "next": "^15.3.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-pwa": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
-    "vue-template-compiler": "^2.6.11"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^15.0.0",
+    "postcss": "^8.5.6",
+    "typescript": "^5.0.0"
+  }
 }
