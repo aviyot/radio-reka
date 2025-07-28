@@ -14,6 +14,7 @@ export default function RecordedShows({
   const [selectedDate, setSelectedDate] = useState("2025-07-28");
   const [selectedShow, setSelectedShow] = useState(initialShow);
   const [isLoading, setIsLoading] = useState(false);
+  const [userHasSelectedShow, setUserHasSelectedShow] = useState(false);
 
   // הגדרת תאריך נכון רק אחרי mount
   useEffect(() => {
@@ -26,7 +27,25 @@ export default function RecordedShows({
       const day = String(today.getDate()).padStart(2, "0");
       setSelectedDate(`${year}-${month}-${day}`);
     }
-  }, []);
+  }, [initialDate]);
+
+  // עדכון תוכנית נבחרת כשמשתנה initialShow - רק אם המשתמש לא בחר ידנית
+  useEffect(() => {
+    console.log(`בדיקת עדכון אוטומטי:`, {
+      initialShow,
+      selectedShow,
+      userHasSelectedShow,
+      shouldUpdate:
+        initialShow && initialShow !== selectedShow && !userHasSelectedShow,
+    });
+
+    if (initialShow && initialShow !== selectedShow && !userHasSelectedShow) {
+      setSelectedShow(initialShow);
+      console.log(`✅ עדכון אוטומטי של תוכנית נבחרת ל: ${initialShow}`);
+    } else if (userHasSelectedShow) {
+      console.log(`🚫 לא מעדכן - המשתמש בחר ידנית: ${selectedShow}`);
+    }
+  }, [initialShow, selectedShow, userHasSelectedShow]);
 
   // פורמט התאריך עבור ה-iframe
   const getIframeDate = useCallback(() => {
@@ -80,6 +99,8 @@ export default function RecordedShows({
     if (show !== selectedShow) {
       setIsLoading(true);
       setSelectedShow(show);
+      setUserHasSelectedShow(true); // סימון שהמשתמש בחר ידנית
+      console.log(`משתמש בחר ידנית שידור: ${show}`);
       setTimeout(() => setIsLoading(false), 500);
     }
   };
@@ -89,6 +110,7 @@ export default function RecordedShows({
     if (date !== selectedDate) {
       setIsLoading(true);
       setSelectedDate(date);
+      console.log(`משתמש שינה תאריך ל: ${date}`);
       setTimeout(() => setIsLoading(false), 500);
     }
   };

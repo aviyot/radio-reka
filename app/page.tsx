@@ -1,8 +1,7 @@
 "use client";
 
 import Header from "../components/Header";
-import LiveRadio from "../components/LiveRadio";
-import RecordedShows from "../components/RecordedShows";
+import SmartRadio from "../components/SmartRadio";
 
 export default function Home() {
   const radioUrl =
@@ -11,12 +10,7 @@ export default function Home() {
   return (
     <div className="app-container">
       <Header />
-
-      {/* Main Content */}
-      <div className="main-content">
-        <LiveRadio radioUrl={radioUrl} />
-        <RecordedShows />
-      </div>
+      <SmartRadio radioUrl={radioUrl} />
     </div>
   );
 }
