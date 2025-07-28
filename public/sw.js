@@ -1,6 +1,8 @@
-const CACHE_NAME = "radio-reka-v0.3.0";
-const STATIC_CACHE = "static-v0.3.0";
-const DYNAMIC_CACHE = "dynamic-v0.3.0";
+// גירסה אוטומטית על בסיס זמן הטעינה - לא צריך לעדכן ידנית יותר!
+const APP_VERSION = Date.now().toString();
+const CACHE_NAME = `radio-reka-v${APP_VERSION}`;
+const STATIC_CACHE = `static-v${APP_VERSION}`;
+const DYNAMIC_CACHE = `dynamic-v${APP_VERSION}`;
 
 // URLs to cache on install
 const STATIC_ASSETS = [
