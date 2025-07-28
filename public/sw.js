@@ -1,6 +1,6 @@
-const CACHE_NAME = "radio-reka-v1.0.0";
-const STATIC_CACHE = "static-v1.0.0";
-const DYNAMIC_CACHE = "dynamic-v1.0.0";
+const CACHE_NAME = "radio-reka-v0.3.0";
+const STATIC_CACHE = "static-v0.3.0";
+const DYNAMIC_CACHE = "dynamic-v0.3.0";
 
 // URLs to cache on install
 const STATIC_ASSETS = [

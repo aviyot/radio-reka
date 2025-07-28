@@ -1,6 +1,7 @@
 {
   "name": "רדיו רקע אמהרית",
   "short_name": "רדיו רקע",
+  "version": "0.3.0",
   "description": "רדיו רקע אמהרית - שידור חי ותוכניות מוקלטות",
   "start_url": "/",
   "display": "standalone",
