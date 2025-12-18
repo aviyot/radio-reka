@@ -2,8 +2,10 @@
 
 import { useEffect, useState, useCallback } from "react";
 import ShareButton from "./ShareButton";
-import PWASettings from "./PWASettings";
+import dynamic from "next/dynamic";
 import { usePWA } from "../hooks/usePWA";
+
+const PWASettings = dynamic(() => import("./PWASettings"), { ssr: false });
 
 export default function Header() {
   const [currentTime, setCurrentTime] = useState(new Date());
