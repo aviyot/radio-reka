@@ -9,7 +9,15 @@ type AppInfo = {
 
 export default function PWASettings() {
   const [isOpen, setIsOpen] = useState(false);
-  const { isInstalled, getAppInfo } = usePWA();
+  const {
+    isInstalled,
+    getAppInfo,
+    checkForUpdates,
+    autoUpdateEnabled,
+    toggleAutoUpdate,
+  } = usePWA();
+
+  console.log("PWASettings rendered, isInstalled:", isInstalled);
 
   const handleGetAppInfo = async () => {
     const info = (await getAppInfo()) as AppInfo;
@@ -17,9 +25,10 @@ export default function PWASettings() {
     alert(`גרסה: ${info?.version || "לא זמין"}`);
   };
 
-  if (!isInstalled) {
-    return null;
-  }
+  // Temporarily show always for debugging
+  // if (!isInstalled && process.env.NODE_ENV === "production") {
+  //   return null;
+  // }
 
   return (
     <>
@@ -27,6 +36,12 @@ export default function PWASettings() {
         onClick={() => setIsOpen(!isOpen)}
         className="pwa-settings-toggle"
         title="הגדרות PWA"
+        style={{
+          background: "transparent",
+          border: "none",
+          cursor: "pointer",
+          fontSize: "1.5rem",
+        }}
       >
         ⚙️
       </button>
@@ -55,9 +70,28 @@ export default function PWASettings() {
               </div>
 
               <div className="pwa-setting-item">
-                <label>מצב התקנה</label>
+                <label>בדוק עדכונים</label>
                 <div className="pwa-setting-control">
-                  <span className="pwa-status enabled">מותקן</span>
+                  <button
+                    onClick={checkForUpdates}
+                    className="pwa-check-update-btn"
+                  >
+                    בדוק עכשיו
+                  </button>
+                </div>
+              </div>
+
+              <div className="pwa-setting-item">
+                <label>עדכון אוטומטי</label>
+                <div className="pwa-setting-control">
+                  <label className="pwa-toggle">
+                    <input
+                      type="checkbox"
+                      checked={autoUpdateEnabled}
+                      onChange={toggleAutoUpdate}
+                    />
+                    <span className="pwa-toggle-slider"></span>
+                  </label>
                 </div>
               </div>
             </div>

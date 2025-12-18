@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import ShareButton from "./ShareButton";
+import PWASettings from "./PWASettings";
 import { usePWA } from "../hooks/usePWA";
 
 export default function Header() {
@@ -60,6 +61,7 @@ export default function Header() {
           </button>
         )}
         <ShareButton className="header-share-button" />
+        <PWASettings />
       </div>
     </header>
   );

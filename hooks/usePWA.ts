@@ -7,6 +7,7 @@ interface PWAState {
   isInstalled: boolean;
   isOnline: boolean;
   hasUpdate: boolean;
+  autoUpdateEnabled: boolean;
 }
 
 export const usePWA = () => {
@@ -14,6 +15,7 @@ export const usePWA = () => {
     isInstallable: false,
     isInstalled: false,
     isOnline: true,
+    autoUpdateEnabled: true, // Default to enabled
     hasUpdate: false,
   });
 
@@ -48,7 +50,13 @@ export const usePWA = () => {
                   newWorker.state === "installed" &&
                   navigator.serviceWorker.controller
                 ) {
-                  setPwaState((prev) => ({ ...prev, hasUpdate: true }));
+                  if (pwaState.autoUpdateEnabled) {
+                    // Auto-update: skip waiting and reload
+                    newWorker.postMessage({ type: "SKIP_WAITING" });
+                    window.location.reload();
+                  } else {
+                    setPwaState((prev) => ({ ...prev, hasUpdate: true }));
+                  }
                 }
               });
             }
@@ -124,6 +132,23 @@ export const usePWA = () => {
     }
   };
 
+  const toggleAutoUpdate = () => {
+    setPwaState((prev) => ({
+      ...prev,
+      autoUpdateEnabled: !prev.autoUpdateEnabled,
+    }));
+  };
+
+  const checkForUpdates = () => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistration().then((registration) => {
+        if (registration) {
+          registration.update();
+        }
+      });
+    }
+  };
+
   // Request notification permission (disabled for now)
   const requestNotificationPermission = async () => {
     // Push notifications are disabled
@@ -188,7 +213,9 @@ export const usePWA = () => {
     ...pwaState,
     installApp,
     updateApp,
+    checkForUpdates,
     requestNotificationPermission,
+    toggleAutoUpdate,
     subscribeToPush,
     shareContent,
     getAppInfo,
