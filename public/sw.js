@@ -1,37 +1,35 @@
-// גרסה ידנית - שנה את המספר הזה רק כשאתה רוצה לכפות עדכון אצל כולם!
-const APP_VERSION = "v1.0.1"; // עדכנתי גרסה כדי שתראה את הלוגים החדשים
+// גרסה ידנית - הקפצתי ל-1.0.2 כדי לנקות את הבלגן הקודם
+const APP_VERSION = "v1.0.2";
 const CACHE_NAME = `radio-reka-${APP_VERSION}`;
 const STATIC_CACHE = `static-${APP_VERSION}`;
 const DYNAMIC_CACHE = `dynamic-${APP_VERSION}`;
 
 // URLs to cache on install
+// הסרתי מכאן את הפונטים החיצוניים כדי למנוע שגיאות CORS בהתקנה
+// הם יישמרו אוטומטית כשהמשתמש יגלוש (Runtime Caching)
 const STATIC_ASSETS = [
   "/",
   "/manifest.json",
-  // שים לב: אם אחד הקבצים האלו לא קיים בתיקיית public אצלך, הוא ייכשל
   "/img/icons/android-chrome-192x192.png",
   "/img/icons/android-chrome-512x512.png",
   "/img/icons/apple-icon-180x180.png",
   "/img/icons/favicon-32x32.png",
   "/img/icons/favicon-16x16.png",
-  "https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap",
-  "https://fonts.gstatic.com/s/heebo/v23/NGS6v5_NC0k9P_Hiukt2b_s.woff2",
 ];
 
 // Install
 self.addEventListener("install", (event) => {
   console.log("[SW] Installing version:", APP_VERSION);
-  self.skipWaiting(); // השתלטות מיידית
+  self.skipWaiting();
 
   event.waitUntil(
     caches.open(STATIC_CACHE).then(async (cache) => {
       console.log("[SW] Caching static assets...");
 
-      // שינוי קריטי: במקום addAll שקורס אם קובץ אחד חסר,
-      // אנחנו עוברים אחד אחד ובודקים מי נכשל
       const promises = STATIC_ASSETS.map(async (url) => {
         try {
-          const req = new Request(url, { mode: "no-cors" }); // no-cors חשוב לפונטים חיצוניים לפעמים
+          // מנסים להביא את הקובץ
+          const req = new Request(url, { cache: "reload" });
           const response = await fetch(req);
 
           if (!response.ok) {
@@ -41,7 +39,6 @@ self.addEventListener("install", (event) => {
           return cache.put(url, response);
         } catch (error) {
           console.warn(`[SW] נכשל בטעינת קובץ לקאש: ${url}`, error);
-          // אנחנו לא זורקים שגיאה כדי שה-SW ימשיך להתקין את שאר הקבצים!
         }
       });
 
@@ -50,18 +47,20 @@ self.addEventListener("install", (event) => {
   );
 });
 
-// Activate - Clean up old caches
+// Activate
 self.addEventListener("activate", (event) => {
   console.log("[SW] Activating version:", APP_VERSION);
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
+          // מוחק כל קאש ישן ששייך לאפליקציה הזו
           if (
             cacheName !== STATIC_CACHE &&
             cacheName !== DYNAMIC_CACHE &&
             (cacheName.startsWith("radio-reka") ||
-              cacheName.startsWith("static-"))
+              cacheName.startsWith("static-") ||
+              cacheName.startsWith("dynamic-"))
           ) {
             console.log("[SW] Deleting old cache:", cacheName);
             return caches.delete(cacheName);
@@ -78,17 +77,21 @@ self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
+  // --- תיקון קריטי: סינון פרוטוקולים ---
+  // מתעלם מכל מה שהוא לא http/https (כמו chrome-extension://)
+  if (!url.protocol.startsWith("http")) return;
+
   // 1. התעלם מבקשות שאינן GET
   if (request.method !== "GET") return;
 
-  // 2. התעלם מסטרימינג של אודיו (קריטי לרדיו!)
+  // 2. התעלם מסטרימינג של אודיו
   if (
     url.hostname.includes("streamtheworld.com") ||
     url.hostname.includes("omny.fm") ||
     url.pathname.endsWith(".mp3") ||
     url.pathname.endsWith(".aac")
   ) {
-    return; // תן לרשת לטפל בזה ישירות
+    return;
   }
 
   // 3. אסטרטגיה לדפים (Navigation) - Network First
@@ -120,7 +123,11 @@ self.addEventListener("fetch", (event) => {
         if (cachedResponse) return cachedResponse;
 
         return fetch(request).then((networkResponse) => {
-          if (networkResponse.ok) {
+          // שומרים בקאש רק אם התשובה תקינה (וגם סטטוס 0 לפונטים זה בסדר ברמת Runtime)
+          if (
+            networkResponse.ok ||
+            (networkResponse.status === 0 && networkResponse.type === "opaque")
+          ) {
             const responseClone = networkResponse.clone();
             caches
               .open(STATIC_CACHE)
@@ -133,13 +140,13 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // 5. ברירת מחדל לשאר הדברים
+  // 5. ברירת מחדל
   event.respondWith(
     caches.match(request).then((response) => response || fetch(request)),
   );
 });
 
-// Background Sync & Push
+// Background Sync
 self.addEventListener("sync", (event) => {
   if (event.tag === "background-sync") {
     console.log("[SW] Background sync triggered");
