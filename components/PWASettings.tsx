@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { usePWA } from "../hooks/usePWA";
 import packageJson from "../package.json";
-import ShareButton from "./ShareButton";
+import dynamic from "next/dynamic";
+
+const ShareButton = dynamic(() => import("./ShareButton"), { ssr: false });
 
 type AppInfo = {
   version?: string;

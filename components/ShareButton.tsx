@@ -12,13 +12,15 @@ interface ShareButtonProps {
 export default function ShareButton({
   title = "רדיו רקע אמהרית",
   text = "רדיו רקע אמהרית - שידור חי ותוכניות מוקלטות",
-  url = typeof window !== "undefined" ? window.location.href : "",
+  url,
   className = "share-button",
 }: ShareButtonProps) {
   const { shareContent } = usePWA();
 
   const handleShare = async () => {
-    await shareContent(title, text, url);
+    const shareUrl =
+      url || (typeof window !== "undefined" ? window.location.href : "");
+    await shareContent(title, text, shareUrl);
   };
 
   return (

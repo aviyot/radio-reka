@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { usePWA } from "../hooks/usePWA";
 
 const PWASettings = dynamic(() => import("./PWASettings"), { ssr: false });
+const ShareButton = dynamic(() => import("./ShareButton"), { ssr: false });
 
 export default function Header() {
   const [currentTime, setCurrentTime] = useState(new Date());

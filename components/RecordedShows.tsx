@@ -47,10 +47,42 @@ export default function RecordedShows({
     }
   }, [initialShow, selectedShow, userHasSelectedShow]);
 
-  // פורמט התאריך עבור ה-iframe
+  // פונקציה לחישוב התאריך הנכון לתוכנית
+  const getAdjustedDate = useCallback(() => {
+    if (!selectedDate) return selectedDate;
+
+    const now = new Date();
+    const currentHour = now.getHours();
+    const selectedDateObj = new Date(selectedDate);
+    const isToday = selectedDateObj.toDateString() === now.toDateString();
+
+    // הגדרת שעות התחלה לתוכניות
+    const showStartHours = {
+      amharit: 6, // בוקר - מתחיל מ-06:00
+      "kan-amhari-noon": 13, // צהריים - מתחיל מ-13:00
+      "evenign-news-amharit": 19, // ערב - מתחיל מ-19:00
+    };
+
+    const startHour =
+      showStartHours[selectedShow as keyof typeof showStartHours] || 0;
+
+    // אם זה היום הנוכחי והשעה הנוכחית היא לפני שעת ההתחלה של התוכנית
+    if (isToday && currentHour < startHour) {
+      // חסר יום אחד
+      const yesterday = new Date(selectedDateObj);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const year = yesterday.getFullYear();
+      const month = String(yesterday.getMonth() + 1).padStart(2, "0");
+      const day = String(yesterday.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    return selectedDate;
+  }, [selectedDate, selectedShow]);
   const getIframeDate = useCallback(() => {
-    if (!selectedDate) return "";
-    const date = new Date(selectedDate);
+    const adjustedDate = getAdjustedDate();
+    if (!adjustedDate) return "";
+    const date = new Date(adjustedDate);
     // וודא שהתאריך תקין
     if (isNaN(date.getTime())) {
       const today = new Date();
@@ -62,20 +94,26 @@ export default function RecordedShows({
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
     return `${day}-${month}-${year}`;
-  }, [selectedDate]);
+  }, [getAdjustedDate]);
 
   // פורמט תאריך לתצוגה
   const getDisplayDate = useCallback(() => {
-    if (!selectedDate) return "טוען...";
-    const date = new Date(selectedDate);
+    const adjustedDate = getAdjustedDate();
+    if (!adjustedDate) return "טוען...";
+    const date = new Date(adjustedDate);
     if (isNaN(date.getTime())) return "תאריך לא תקין";
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
     return `${day}.${month}.${year}`;
-  }, [selectedDate]);
+  }, [getAdjustedDate]);
 
-  //src="https://omny.fm/shows/amharit/27-7-2025/embed"
+  // בדיקה אם התאריך המוצג הוא מיום קודם
+  const isShowingPreviousDay = useCallback(() => {
+    if (!selectedDate) return false;
+    const adjustedDate = getAdjustedDate();
+    return adjustedDate !== selectedDate;
+  }, [selectedDate, getAdjustedDate]);
 
   // יצירת URL עבור iframe
   const iframeUrl = `https://omny.fm/shows/${selectedShow}/${getIframeDate()}/embed`;
@@ -132,6 +170,9 @@ export default function RecordedShows({
     <div className="content-section recorded-section">
       <div className="section-header">
         📻 תוכניות מוקלטות - {getShowName(selectedShow)} ({getDisplayDate()})
+        {isShowingPreviousDay() && (
+          <span className="previous-day-indicator"> (מיום קודם)</span>
+        )}
       </div>
 
       <div className="iframe-container">

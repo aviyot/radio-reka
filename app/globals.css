@@ -259,6 +259,13 @@ body {
   color: #6b21a8;
 }
 
+.previous-day-indicator {
+  color: #dc2626;
+  font-weight: bold;
+  font-size: 0.9em;
+  margin-right: 0.5rem;
+}
+
 /* Audio player */
 .audio-container {
   display: flex;
