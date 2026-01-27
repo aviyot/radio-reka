@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { usePWA } from "../hooks/usePWA";
 import packageJson from "../package.json";
+import ShareButton from "./ShareButton";
 
 type AppInfo = {
   version?: string;
@@ -16,6 +17,8 @@ export default function PWASettings() {
     checkForUpdates,
     autoUpdateEnabled,
     toggleAutoUpdate,
+    isInstallable,
+    installApp,
   } = usePWA();
 
   console.log("PWASettings rendered, isInstalled:", isInstalled);
@@ -65,6 +68,41 @@ export default function PWASettings() {
                 <label>גרסה נוכחית</label>
                 <div className="pwa-setting-control">
                   <span className="version-number">v{packageJson.version}</span>
+                </div>
+              </div>
+
+              {isInstallable && !isInstalled && (
+                <div className="pwa-setting-item">
+                  <label>התקנת האפליקציה</label>
+                  <div className="pwa-setting-control">
+                    <button
+                      onClick={installApp}
+                      className="pwa-install-btn"
+                      title="התקן אפליקציה"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        style={{ marginRight: "0.5rem" }}
+                      >
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7,10 12,15 17,10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                      </svg>
+                      התקן אפליקציה
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div className="pwa-setting-item">
+                <label>שתף אפליקציה</label>
+                <div className="pwa-setting-control">
+                  <ShareButton className="pwa-share-button" />
                 </div>
               </div>
 
