@@ -16,6 +16,7 @@ export default function LiveRadio({ radioUrl }: LiveRadioProps) {
           <div className="broadcast-hours">
             <span className="hours-label">שעות שידור באמהרית:</span>
             <span className="hours-time">6-7 | 13-14 | 19-20</span>
+            <span className="timezone-label">(שעון ישראל)</span>
           </div>
         </div>
       </div>

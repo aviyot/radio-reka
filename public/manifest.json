@@ -1,8 +1,8 @@
 {
-  "name": "רדיו רקע אמהרית",
-  "short_name": "רדיו רקע",
-  "version": "0.4.0",
-  "description": "רדיו רקע אמהרית - שידור חי ותוכניות מוקלטות",
+  "name": "רדיו רקע אמהרית | Radio Reka Amharic",
+  "short_name": "רדיו רקע | Radio Reka",
+  "version": "0.6.0",
+  "description": "רדיו רקע אמהרית - שידור חי ותוכניות מוקלטות באמהרית | Radio Reka Amharic - Live Amharic broadcast and recorded programs",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

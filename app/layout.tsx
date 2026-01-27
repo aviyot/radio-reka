@@ -3,11 +3,30 @@ import type { Metadata } from "next";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "רדיו רקע אמהרית",
-  description: "רדיו רקע אמהרית - שידור חי ותוכניות מוקלטות",
+  title: "רדיו רקע אמהרית | Radio Reka Amharic",
+  description:
+    "רדיו רקע אמהרית - שידור חי ותוכניות מוקלטות באמהרית | Radio Reka Amharic - Live Amharic broadcast and recorded programs",
   manifest: "/manifest.json",
   icons: {
     icon: "/favicon.ico",
+  },
+  keywords: [
+    "רדיו",
+    "אמהרית",
+    "radio",
+    "Amharic",
+    "Ethiopia",
+    "Israel",
+    "תוכניות מוקלטות",
+    "recorded programs",
+    "አማርኛ",
+    "Amharic radio",
+  ],
+  authors: [{ name: "Radio Reka Amharic" }],
+  openGraph: {
+    title: "רדיו רקע אמהרית | Radio Reka Amharic",
+    description: "רדיו רקע אמהרית - שידור חי ותוכניות מוקלטות באמהרית",
+    type: "website",
   },
 };
 

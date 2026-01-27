@@ -51,10 +51,16 @@ export default function RecordedShows({
   const getAdjustedDate = useCallback(() => {
     if (!selectedDate) return selectedDate;
 
+    // קבלת השעה הנוכחית בישראל (IST)
     const now = new Date();
-    const currentHour = now.getHours();
+    const israelTime = new Date(
+      now.toLocaleString("en-US", { timeZone: "Asia/Jerusalem" }),
+    );
+    const currentHour = israelTime.getHours();
+
     const selectedDateObj = new Date(selectedDate);
-    const isToday = selectedDateObj.toDateString() === now.toDateString();
+    const isToday =
+      selectedDateObj.toDateString() === israelTime.toDateString();
 
     // הגדרת שעות התחלה לתוכניות
     const showStartHours = {
@@ -66,7 +72,7 @@ export default function RecordedShows({
     const startHour =
       showStartHours[selectedShow as keyof typeof showStartHours] || 0;
 
-    // אם זה היום הנוכחי והשעה הנוכחית היא לפני שעת ההתחלה של התוכנית
+    // אם זה היום הנוכחי והשעה הנוכחית בישראל היא לפני שעת ההתחלה של התוכנית
     if (isToday && currentHour < startHour) {
       // חסר יום אחד
       const yesterday = new Date(selectedDateObj);
@@ -173,6 +179,9 @@ export default function RecordedShows({
         {isShowingPreviousDay() && (
           <span className="previous-day-indicator"> (מיום קודם)</span>
         )}
+        <div className="timezone-notice">
+          ⏰ שעות השידור לפי שעון ישראל (IST)
+        </div>
       </div>
 
       <div className="iframe-container">

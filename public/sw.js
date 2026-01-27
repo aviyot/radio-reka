@@ -1,5 +1,5 @@
 // גרסה מסונכרנת עם package.json
-const APP_VERSION = "0.5.0";
+const APP_VERSION = "0.6.0";
 const CACHE_NAME = `radio-reka-${APP_VERSION}`;
 const STATIC_CACHE = `static-${APP_VERSION}`;
 const DYNAMIC_CACHE = `dynamic-${APP_VERSION}`;

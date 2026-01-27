@@ -244,6 +244,13 @@ body {
   letter-spacing: 0.5px;
 }
 
+.timezone-label {
+  font-size: 0.7rem;
+  color: #6b7280;
+  font-weight: normal;
+  opacity: 0.8;
+}
+
 @keyframes pulse {
   0%,
   100% {
@@ -264,6 +271,14 @@ body {
   font-weight: bold;
   font-size: 0.9em;
   margin-right: 0.5rem;
+}
+
+.timezone-notice {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: normal;
+  margin-top: 0.25rem;
+  opacity: 0.8;
 }
 
 /* Audio player */

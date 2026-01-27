@@ -15,9 +15,12 @@ export default function SmartRadio({ radioUrl }: SmartRadioProps) {
   // פונקציה לבדיקה אם אנחנו בשעות שידור חי
   const isLiveBroadcastTime = useCallback(() => {
     const now = new Date();
-    const hour = now.getHours();
+    const israelTime = new Date(
+      now.toLocaleString("en-US", { timeZone: "Asia/Jerusalem" }),
+    );
+    const hour = israelTime.getHours();
 
-    // שעות שידור באמהרית: 6-7, 13-14, 19-20
+    // שעות שידור באמהרית: 6-7, 13-14, 19-20 (שעון ישראל)
     const broadcastHours = [
       { start: 6, end: 7 },
       { start: 13, end: 14 },
@@ -30,9 +33,12 @@ export default function SmartRadio({ radioUrl }: SmartRadioProps) {
   // פונקציה לקבלת זמן השידור האחרון שהסתיים
   const getLatestCompletedShow = useCallback(() => {
     const now = new Date();
-    const hour = now.getHours();
+    const israelTime = new Date(
+      now.toLocaleString("en-US", { timeZone: "Asia/Jerusalem" }),
+    );
+    const hour = israelTime.getHours();
 
-    console.log(`השעה הנוכחית: ${hour}:${now.getMinutes()}`);
+    console.log(`השעה הנוכחית בישראל: ${hour}:${israelTime.getMinutes()}`);
 
     if (hour >= 20 || hour < 6) {
       // אחרי 20:00 או לפני 06:00 - השידור האחרון שהסתיים היה 19-20 (ערב)
@@ -55,11 +61,14 @@ export default function SmartRadio({ radioUrl }: SmartRadioProps) {
   // פונקציה לקבלת תאריך השידור האחרון
   const getLatestShowDate = useCallback(() => {
     const now = new Date();
-    const hour = now.getHours();
+    const israelTime = new Date(
+      now.toLocaleString("en-US", { timeZone: "Asia/Jerusalem" }),
+    );
+    const hour = israelTime.getHours();
 
-    // אם עכשיו לפני 06:00, השידור האחרון היה אתמול
+    // אם עכשיו לפני 06:00 בישראל, השידור האחרון היה אתמול
     if (hour < 6) {
-      const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+      const yesterday = new Date(israelTime.getTime() - 24 * 60 * 60 * 1000);
       const year = yesterday.getFullYear();
       const month = String(yesterday.getMonth() + 1).padStart(2, "0");
       const day = String(yesterday.getDate()).padStart(2, "0");
@@ -67,9 +76,9 @@ export default function SmartRadio({ radioUrl }: SmartRadioProps) {
     }
 
     // אחרת, השידור האחרון היה היום
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
+    const year = israelTime.getFullYear();
+    const month = String(israelTime.getMonth() + 1).padStart(2, "0");
+    const day = String(israelTime.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   }, []);
 
@@ -84,7 +93,7 @@ export default function SmartRadio({ radioUrl }: SmartRadioProps) {
       setLatestShowDate(newLatestDate);
 
       console.log(
-        `טוען את השידור האחרון: ${newLatestShow} מתאריך ${newLatestDate}`
+        `טוען את השידור האחרון: ${newLatestShow} מתאריך ${newLatestDate}`,
       );
     };
 
