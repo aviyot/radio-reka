@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { usePWA } from "../hooks/usePWA";
+import packageJson from "../package.json";
 
 type AppInfo = {
   version?: string;
@@ -60,6 +61,13 @@ export default function PWASettings() {
             </div>
 
             <div className="pwa-settings-body">
+              <div className="pwa-setting-item version-display">
+                <label>גרסה נוכחית</label>
+                <div className="pwa-setting-control">
+                  <span className="version-number">v{packageJson.version}</span>
+                </div>
+              </div>
+
               <div className="pwa-setting-item">
                 <label>מידע על האפליקציה</label>
                 <div className="pwa-setting-control">

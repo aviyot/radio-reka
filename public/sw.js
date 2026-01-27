@@ -1,5 +1,5 @@
-// גרסה ידנית - הקפצתי ל-1.0.2 כדי לנקות את הבלגן הקודם
-const APP_VERSION = "v1.0.2";
+// גרסה מסונכרנת עם package.json
+const APP_VERSION = "0.2.0";
 const CACHE_NAME = `radio-reka-${APP_VERSION}`;
 const STATIC_CACHE = `static-${APP_VERSION}`;
 const DYNAMIC_CACHE = `dynamic-${APP_VERSION}`;
