@@ -66,8 +66,9 @@ export default function SmartRadio({ radioUrl }: SmartRadioProps) {
     );
     const hour = israelTime.getHours();
 
-    // אם עכשיו לפני 06:00 בישראל, השידור האחרון היה אתמול
-    if (hour < 6) {
+    // אם עכשיו לפני 06:00 או בין 06:00-07:00 בבוקר (בזמן שידור הבוקר)
+    // השידור האחרון שהסתיים היה אתמול בערב
+    if (hour < 7) {
       const yesterday = new Date(israelTime.getTime() - 24 * 60 * 60 * 1000);
       const year = yesterday.getFullYear();
       const month = String(yesterday.getMonth() + 1).padStart(2, "0");
