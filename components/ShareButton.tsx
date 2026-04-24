@@ -13,7 +13,7 @@ export default function ShareButton({
   title = "רדיו רקע אמהרית",
   text = "רדיו רקע אמהרית - שידור חי ותוכניות מוקלטות",
   url,
-  className = "share-button",
+  className = "inline-flex items-center gap-2 rounded-2xl border border-white/40 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/70",
 }: ShareButtonProps) {
   const { shareContent } = usePWA();
 

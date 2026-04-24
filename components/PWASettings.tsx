@@ -1,11 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePWA } from "../hooks/usePWA";
 import packageJson from "../package.json";
-import dynamic from "next/dynamic";
-
-const ShareButton = dynamic(() => import("./ShareButton"), { ssr: false });
+import {
+  FiMenu,
+  FiDownloadCloud,
+  FiInfo,
+  FiRefreshCw,
+  FiToggleLeft,
+  FiX,
+} from "react-icons/fi";
+import ShareButton from "./ShareButton";
 
 type AppInfo = {
   version?: string;
@@ -13,6 +19,7 @@ type AppInfo = {
 
 export default function PWASettings() {
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
   const {
     isInstalled,
     getAppInfo,
@@ -23,129 +30,109 @@ export default function PWASettings() {
     installApp,
   } = usePWA();
 
-  console.log("PWASettings rendered, isInstalled:", isInstalled);
-
   const handleGetAppInfo = async () => {
     const info = (await getAppInfo()) as AppInfo;
-    console.log("App info:", info);
     alert(`גרסה: ${info?.version || "לא זמין"}`);
   };
 
-  // Temporarily show always for debugging
-  // if (!isInstalled && process.env.NODE_ENV === "production") {
-  //   return null;
-  // }
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isOpen &&
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    window.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      window.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   return (
-    <>
+    <div ref={menuRef} className="relative text-right">
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="pwa-settings-toggle"
-        title="הגדרות PWA"
-        style={{
-          background: "transparent",
-          border: "none",
-          cursor: "pointer",
-          fontSize: "1.5rem",
-        }}
+        onClick={() => setIsOpen((prev) => !prev)}
+        className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
+        aria-haspopup="true"
+        aria-expanded={isOpen}
       >
-        ⚙️
+        <FiMenu className="h-5 w-5" />
       </button>
 
       {isOpen && (
-        <div className="pwa-settings-modal">
-          <div className="pwa-settings-content">
-            <div className="pwa-settings-header">
-              <h3>הגדרות האפליקציה</h3>
+        <div className="absolute right-0 z-50 mt-3 min-w-[18rem] overflow-hidden rounded-3xl border border-slate-200 bg-white p-4 shadow-2xl shadow-slate-900/10 text-slate-900">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold">הגדרות האפליקציה</p>
+              <p className="text-xs text-slate-500">
+                גרסה v{packageJson.version}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              className="rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+              aria-label="סגור תפריט"
+            >
+              <FiX className="h-4 w-4" />
+            </button>
+          </div>
+
+          <div className="space-y-3">
+            {isInstallable && !isInstalled && (
               <button
-                onClick={() => setIsOpen(false)}
-                className="pwa-settings-close"
+                onClick={installApp}
+                className="flex w-full items-center justify-between gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-100"
               >
-                ×
+                <span className="flex items-center gap-2">
+                  <FiDownloadCloud className="h-4 w-4" />
+                  התקן אפליקציה
+                </span>
               </button>
-            </div>
+            )}
 
-            <div className="pwa-settings-body">
-              <div className="pwa-setting-item version-display">
-                <label>גרסה נוכחית</label>
-                <div className="pwa-setting-control">
-                  <span className="version-number">v{packageJson.version}</span>
-                </div>
-              </div>
-
-              {isInstallable && !isInstalled && (
-                <div className="pwa-setting-item">
-                  <label>התקנת האפליקציה</label>
-                  <div className="pwa-setting-control">
-                    <button
-                      onClick={installApp}
-                      className="pwa-install-btn"
-                      title="התקן אפליקציה"
-                    >
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        style={{ marginRight: "0.5rem" }}
-                      >
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7,10 12,15 17,10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                      </svg>
-                      התקן אפליקציה
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              <div className="pwa-setting-item">
-                <label>שתף אפליקציה</label>
-                <div className="pwa-setting-control">
-                  <ShareButton className="pwa-share-button" />
-                </div>
-              </div>
-
-              <div className="pwa-setting-item">
-                <label>מידע על האפליקציה</label>
-                <div className="pwa-setting-control">
-                  <button onClick={handleGetAppInfo} className="pwa-info-btn">
-                    הצג מידע
-                  </button>
-                </div>
-              </div>
-
-              <div className="pwa-setting-item">
-                <label>בדוק עדכונים</label>
-                <div className="pwa-setting-control">
-                  <button
-                    onClick={checkForUpdates}
-                    className="pwa-check-update-btn"
-                  >
-                    בדוק עכשיו
-                  </button>
-                </div>
-              </div>
-
-              <div className="pwa-setting-item">
-                <label>עדכון אוטומטי</label>
-                <div className="pwa-setting-control">
-                  <label className="pwa-toggle">
-                    <input
-                      type="checkbox"
-                      checked={autoUpdateEnabled}
-                      onChange={toggleAutoUpdate}
-                    />
-                    <span className="pwa-toggle-slider"></span>
-                  </label>
-                </div>
+            <div className="rounded-3xl border border-slate-200 bg-slate-50 p-3">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.15em] text-slate-500">
+                פעולות מהירות
+              </p>
+              <div className="space-y-2">
+                <ShareButton className="flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50" />
+                <button
+                  onClick={handleGetAppInfo}
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                >
+                  <FiInfo className="h-4 w-4" />
+                  מידע על האפליקציה
+                </button>
+                <button
+                  onClick={checkForUpdates}
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                >
+                  <FiRefreshCw className="h-4 w-4" />
+                  בדוק עדכונים
+                </button>
               </div>
             </div>
+
+            <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+              <span className="flex items-center gap-2">
+                <FiToggleLeft className="h-4 w-4" />
+                עדכון אוטומטי
+              </span>
+              <input
+                type="checkbox"
+                checked={autoUpdateEnabled}
+                onChange={toggleAutoUpdate}
+                className="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
+              />
+            </label>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

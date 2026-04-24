@@ -1,5 +1,5 @@
 // גרסה מסונכרנת עם package.json
-const APP_VERSION = "0.8.0";
+const APP_VERSION = "0.10.0";
 const CACHE_NAME = `radio-reka-${APP_VERSION}`;
 const STATIC_CACHE = `static-${APP_VERSION}`;
 const DYNAMIC_CACHE = `dynamic-${APP_VERSION}`;
@@ -83,7 +83,8 @@ self.addEventListener("fetch", (event) => {
 
   // 1. התעלם מבקשות שאינן GET
   if (request.method !== "GET") return;
-
+  // 2.a התעלם מבקשות של קבצי Next.js דינמיים כדי לא לחסום את Webpack / Turbopack
+  if (url.pathname.startsWith("/_next/")) return;
   // 2. התעלם מסטרימינג של אודיו
   if (
     url.hostname.includes("streamtheworld.com") ||
@@ -97,15 +98,7 @@ self.addEventListener("fetch", (event) => {
   // 3. אסטרטגיה לדפים (Navigation) - Network First
   if (request.mode === "navigate") {
     event.respondWith(
-      fetch(request)
-        .then((networkResponse) => {
-          const responseClone = networkResponse.clone();
-          caches
-            .open(DYNAMIC_CACHE)
-            .then((cache) => cache.put(request, responseClone));
-          return networkResponse;
-        })
-        .catch(() => caches.match("/") || caches.match(request)),
+      fetch(request).catch(() => caches.match("/") || caches.match(request)),
     );
     return;
   }
@@ -154,7 +147,13 @@ self.addEventListener("sync", (event) => {
 });
 
 self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
+  if (!event.data) return;
+
+  if (event.data.type === "SKIP_WAITING") {
     self.skipWaiting();
+  }
+
+  if (event.data.type === "GET_VERSION" && event.ports?.[0]) {
+    event.ports[0].postMessage({ version: APP_VERSION });
   }
 });

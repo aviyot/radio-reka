@@ -8,7 +8,7 @@ export default function Home() {
     "https://playerservices.streamtheworld.com/api/livestream-redirect/KAN_REKA.mp3";
 
   return (
-    <div className="app-container">
+    <div className="min-h-screen">
       <Header />
       <SmartRadio radioUrl={radioUrl} />
     </div>

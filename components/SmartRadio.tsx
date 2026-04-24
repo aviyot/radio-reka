@@ -108,8 +108,7 @@ export default function SmartRadio({ radioUrl }: SmartRadioProps) {
   }, [getLatestCompletedShow, getLatestShowDate]);
 
   return (
-    <div className="main-content">
-      {/* שני סוגי השידורים */}
+    <div className="flex flex-col gap-5 p-4">
       <LiveRadio radioUrl={radioUrl} />
       <RecordedShows
         initialDate={latestShowDate}

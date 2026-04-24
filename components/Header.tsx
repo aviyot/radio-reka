@@ -1,46 +1,46 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import dynamic from "next/dynamic";
-import { usePWA } from "../hooks/usePWA";
-
-const PWASettings = dynamic(() => import("./PWASettings"), { ssr: false });
-const ShareButton = dynamic(() => import("./ShareButton"), { ssr: false });
+import { useEffect, useState } from "react";
+import PWASettings from "./PWASettings";
 
 export default function Header() {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const { isInstalled } = usePWA();
 
-  // עדכון השעה כל דקה
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 60000);
-    return () => clearInterval(timer);
+    const interval = setInterval(() => setCurrentTime(new Date()), 60000);
+    return () => clearInterval(interval);
   }, []);
 
-  // פורמט התאריך והיום
-  const formatDate = useCallback(() => {
-    const date = currentTime;
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day}.${month}.${year}`;
-  }, [currentTime]);
+  const formattedTime = currentTime.toLocaleTimeString("he-IL", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
-  const getDayName = useCallback(() => {
-    const days = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
-    return days[currentTime.getDay()];
-  }, [currentTime]);
+  const formattedDate = currentTime.toLocaleDateString("he-IL", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 
   return (
-    <header className="header">
-      <span>רדיו רקע אמהרית</span>
-      <span className="date-group">
-        <span className="day-name">{getDayName()}</span>
-        <span className="date">{formatDate()}</span>
-      </span>
-      <div className="header-buttons">
+    <header className="flex items-center justify-between gap-4 px-5 py-4 text-white shadow-lg bg-gradient-to-r from-emerald-500 via-orange-500 to-red-500">
+      <div className="flex flex-none items-center text-sm opacity-90">
+        <div className="rounded-2xl border border-white/20 bg-white/10 px-3 py-2 text-right backdrop-blur-sm">
+          <div>{formattedDate}</div>
+          <div className="mt-1 font-semibold text-white">{formattedTime}</div>
+        </div>
+      </div>
+
+      <div className="flex-1 min-w-0 flex justify-center">
+        <div className="min-w-0 text-center">
+          <div className="text-xl font-extrabold tracking-tight">
+            רדיו רקע אמהרית
+          </div>
+          <div className="text-sm opacity-90">שידור חי ותוכניות מוקלטות</div>
+        </div>
+      </div>
+
+      <div className="flex flex-none items-center justify-end">
         <PWASettings />
       </div>
     </header>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 interface PWAState {
   isInstallable: boolean;
@@ -20,11 +20,13 @@ export const usePWA = () => {
   });
 
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const autoUpdateEnabledRef = useRef(true);
+  const isProduction = useMemo(() => process.env.NODE_ENV === "production", []);
 
   useEffect(() => {
     // Check if app is installed
     const isStandalone = window.matchMedia(
-      "(display-mode: standalone)"
+      "(display-mode: standalone)",
     ).matches;
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     const isInStandaloneMode = (window.navigator as any).standalone === true;
@@ -34,39 +36,60 @@ export const usePWA = () => {
       isInstalled: isStandalone || (isIOS && isInStandaloneMode),
     }));
 
-    // Register service worker
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", async () => {
-        try {
-          const registration = await navigator.serviceWorker.register("/sw.js");
-          console.log("SW registered: ", registration);
+    const registerServiceWorker = async () => {
+      try {
+        const registration = await navigator.serviceWorker.register("/sw.js");
+        console.log("SW registered: ", registration);
 
-          // Check for updates
-          registration.addEventListener("updatefound", () => {
-            const newWorker = registration.installing;
-            if (newWorker) {
-              newWorker.addEventListener("statechange", () => {
-                if (
-                  newWorker.state === "installed" &&
-                  navigator.serviceWorker.controller
-                ) {
-                  if (pwaState.autoUpdateEnabled) {
-                    // Auto-update: skip waiting and reload
-                    newWorker.postMessage({ type: "SKIP_WAITING" });
-                    window.location.reload();
-                  } else {
-                    setPwaState((prev) => ({ ...prev, hasUpdate: true }));
-                  }
+        registration.addEventListener("updatefound", () => {
+          const newWorker = registration.installing;
+          if (newWorker) {
+            newWorker.addEventListener("statechange", () => {
+              if (
+                newWorker.state === "installed" &&
+                navigator.serviceWorker.controller
+              ) {
+                if (autoUpdateEnabledRef.current) {
+                  newWorker.postMessage({ type: "SKIP_WAITING" });
+                  window.location.reload();
+                } else {
+                  setPwaState((prev) => ({ ...prev, hasUpdate: true }));
                 }
-              });
-            }
-          });
-        } catch (registrationError) {
-          console.log("SW registration failed: ", registrationError);
+              }
+            });
+          }
+        });
+      } catch (registrationError) {
+        console.log("SW registration failed: ", registrationError);
+      }
+    };
+
+    const unregisterServiceWorkers = async () => {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(
+        registrations.map((registration) => registration.unregister()),
+      );
+      console.log("Unregistered existing service workers.");
+    };
+
+    if ("serviceWorker" in navigator) {
+      if (isProduction) {
+        if (document.readyState === "complete") {
+          void registerServiceWorker();
+        } else {
+          window.addEventListener("load", registerServiceWorker);
         }
-      });
+      } else {
+        void unregisterServiceWorkers();
+      }
     }
 
+    return () => {
+      window.removeEventListener("load", registerServiceWorker);
+    };
+  }, [isProduction]);
+
+  useEffect(() => {
     // Handle install prompt
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
@@ -101,7 +124,7 @@ export const usePWA = () => {
     return () => {
       window.removeEventListener(
         "beforeinstallprompt",
-        handleBeforeInstallPrompt
+        handleBeforeInstallPrompt,
       );
       window.removeEventListener("appinstalled", handleAppInstalled);
       window.removeEventListener("online", handleOnline);
@@ -133,6 +156,7 @@ export const usePWA = () => {
   };
 
   const toggleAutoUpdate = () => {
+    autoUpdateEnabledRef.current = !autoUpdateEnabledRef.current;
     setPwaState((prev) => ({
       ...prev,
       autoUpdateEnabled: !prev.autoUpdateEnabled,
@@ -198,9 +222,13 @@ export const usePWA = () => {
           messageChannel.port1.onmessage = (event) => {
             resolve(event.data);
           };
-          registration.active?.postMessage({ type: "GET_VERSION" }, [
-            messageChannel.port2,
-          ]);
+          if (registration.active) {
+            registration.active.postMessage({ type: "GET_VERSION" }, [
+              messageChannel.port2,
+            ]);
+          } else {
+            resolve(null);
+          }
         });
       }
     } catch (error) {
