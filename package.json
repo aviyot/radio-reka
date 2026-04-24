@@ -1,6 +1,6 @@
 {
-  "name": "reka-amharit-nextjs",
-  "version": "0.7.0",
+  "name": "reka-amharitc-radio",
+  "version": "0.8.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
