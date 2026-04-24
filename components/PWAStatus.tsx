@@ -26,7 +26,7 @@ export default function PWAStatus() {
               <button
                 onClick={() => {
                   const banner = document.querySelector(
-                    ".pwa-install-banner"
+                    ".pwa-install-banner",
                   ) as HTMLElement;
                   if (banner) banner.style.display = "none";
                 }}

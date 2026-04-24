@@ -2,7 +2,16 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["omny.fm", "playerservices.streamtheworld.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "omny.fm",
+      },
+      {
+        protocol: "https",
+        hostname: "playerservices.streamtheworld.com",
+      },
+    ],
     formats: ["image/webp", "image/avif"],
     minimumCacheTTL: 60,
   },
@@ -156,15 +165,6 @@ const nextConfig = {
           {
             key: "Referrer-Policy",
             value: "strict-origin-when-cross-origin",
-          },
-        ],
-      },
-      {
-        source: "/_next/static/(.*)",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
           },
         ],
       },

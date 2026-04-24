@@ -54,7 +54,7 @@ const ShowControls = memo(
         </div>
       </div>
     );
-  }
+  },
 );
 
 ShowControls.displayName = "ShowControls";
