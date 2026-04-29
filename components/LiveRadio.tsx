@@ -14,16 +14,15 @@ export default function LiveRadio({ radioUrl }: LiveRadioProps) {
           <div className="flex items-center gap-4">
             <FiRadio className="h-7 w-7 text-sky-600" />
             <div>
-              <div className="text-lg font-bold">שידור חי</div>
-              <div className="text-sm text-slate-500">
-                התחבר לשידור בזמן אמת
+              <div className="flex items-center gap-2">
+                <div className="text-lg font-bold">שידור חי</div>
+                <div className="flex items-center gap-2 text-sm text-slate-600">
+                  <FiClock className="h-5 w-5 text-slate-500" />
+                  <span>שעות שידור: 6-7 | 13-14 | 19-20</span>
+                </div>
               </div>
+           
             </div>
-          </div>
-
-          <div className="flex items-center gap-2 text-sm text-slate-600">
-            <FiClock className="h-5 w-5 text-slate-500" />
-            <span>שעות שידור: 6-7 | 13-14 | 19-20</span>
           </div>
         </div>
       </div>

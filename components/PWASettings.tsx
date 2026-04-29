@@ -64,7 +64,7 @@ export default function PWASettings() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 z-50 mt-3 min-w-[18rem] overflow-hidden rounded-3xl border border-slate-200 bg-white p-4 shadow-2xl shadow-slate-900/10 text-slate-900">
+        <div className="absolute left-0 z-50 mt-4 min-w-[18rem] overflow-hidden rounded-xl border border-slate-200 bg-white p-4 shadow-2xl shadow-slate-900/10 text-slate-900">
           <div className="mb-3 flex items-center justify-between gap-3">
             <div>
               <p className="text-sm font-semibold">הגדרות האפליקציה</p>

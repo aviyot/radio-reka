@@ -161,22 +161,18 @@ export default function RecordedShows({
       <div className="px-6 py-5 border-b border-slate-200">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
-            <FiMusic className="h-7 w-7 text-slate-700" />
-            <div>
+            <FiCalendar className="h-5 w-5 text-slate-500" />
+            <div className="flex items-center gap-2">
               <div className="text-lg font-bold">תוכניות מוקלטות</div>
               <div className="text-sm text-slate-500">
                 {getShowName(selectedShow)} • {getDisplayDate()}
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-sm text-slate-600">
-            <FiCalendar className="h-5 w-5 text-slate-500" />
-            <span>{selectedDate}</span>
-          </div>
         </div>
       </div>
 
-      <div className="relative bg-slate-50 p-6">
+      <div className="relative bg-slate-50">
         {isLoading && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-[1.75rem] bg-white/90 p-6 text-slate-700">
             <FiRefreshCw className="h-7 w-7 text-sky-600" />
@@ -192,7 +188,7 @@ export default function RecordedShows({
 
         <iframe
           key={iframeKey}
-          className="h-[260px] w-full rounded-[1.5rem] border-0 bg-white"
+          className=" w-full h-44  border-0 bg-white"
           src={iframeUrl}
           title={`תוכנית מוקלטת - ${getShowName(selectedShow)}`}
           loading="eager"
@@ -206,18 +202,7 @@ export default function RecordedShows({
         />
       </div>
 
-      <div className="flex flex-col gap-3 border-t border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative w-full max-w-xs">
-          <FiCalendar className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-          <input
-            type="date"
-            className="w-full rounded-2xl border border-slate-300 bg-white py-2 pl-11 pr-3 text-slate-700 outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100"
-            value={selectedDate}
-            onChange={(e) => handleDateChange(e.target.value)}
-            title="בחר תאריך"
-          />
-        </div>
-
+      <div className="flex  gap-3 border-t border-slate-200 bg-slate-50 p-4 flex-row items-center justify-between">
         <div className="flex flex-wrap gap-3">
           {shows.map((show) => {
             const iconKey = show as keyof typeof showIcons;
@@ -238,6 +223,15 @@ export default function RecordedShows({
               </button>
             );
           })}
+        </div>
+        <div className="relative  max-w-xs">
+          <input
+            type="date"
+            className="rounded-2xl border border-slate-300 bg-white py-3 pl-3 pr-3 text-slate-700 outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100"
+            value={selectedDate}
+            onChange={(e) => handleDateChange(e.target.value)}
+            title="בחר תאריך"
+          />
         </div>
       </div>
     </section>

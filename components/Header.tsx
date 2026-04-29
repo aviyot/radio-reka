@@ -25,9 +25,9 @@ export default function Header() {
   return (
     <header className="flex items-center justify-between gap-4 px-5 py-4 text-white shadow-lg bg-gradient-to-r from-emerald-500 via-orange-500 to-red-500">
       <div className="flex flex-none items-center text-sm opacity-90">
-        <div className="rounded-2xl border border-white/20 bg-white/10 px-3 py-2 text-right backdrop-blur-sm">
-          <div>{formattedDate}</div>
+        <div className=" flex flex-col items-center rounded-2xl border border-white/20 bg-white/10 px-3 py-2 text-right backdrop-blur-sm">
           <div className="mt-1 font-semibold text-white">{formattedTime}</div>
+          <div>{formattedDate}</div>
         </div>
       </div>
 
