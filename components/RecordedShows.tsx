@@ -163,11 +163,38 @@ export default function RecordedShows({
           <div className="flex items-center gap-4">
             <FiCalendar className="h-5 w-5 text-slate-500" />
             <div className="flex items-center gap-2">
-              <div className="text-lg font-bold">תוכניות מוקלטות</div>
-              <div className="text-sm text-slate-500">
-                {getShowName(selectedShow)} • {getDisplayDate()}
+              <div className="font-bold">תוכניות מוקלטות</div>
+              <div className="relative  max-w-xs">
+                <input
+                  type="date"
+                  className="rounded-2xl border border-slate-300 bg-white py-1 px-2 text-slate-700 outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100"
+                  value={selectedDate}
+                  onChange={(e) => handleDateChange(e.target.value)}
+                  title="בחר תאריך"
+                />
               </div>
             </div>
+          </div>
+          <div className="flex justify-between flex-wrap gap-1">
+            {shows.map((show) => {
+              const iconKey = show as keyof typeof showIcons;
+              return (
+                <button
+                  key={show}
+                  className={`flex items-center justify-around gap-2 rounded-2xl border px-2 py-2 text-sm font-semibold transition ${
+                    selectedShow === show
+                      ? "border-sky-600 bg-sky-600 text-white"
+                      : "border-slate-300 bg-white text-slate-700 hover:border-sky-500 hover:bg-sky-50"
+                  }`}
+                  onClick={() => handleShowChange(show)}
+                  title={getShowName(show)}
+                  disabled={isLoading}
+                >
+                  {showIcons[iconKey]}
+                  <span>{getShowName(show)}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -201,39 +228,12 @@ export default function RecordedShows({
           allow="autoplay; encrypted-media"
         />
       </div>
-
+{/* 
       <div className="flex  gap-3 border-t border-slate-200 bg-slate-50 p-4 flex-row items-center justify-between">
-        <div className="flex flex-wrap gap-3">
-          {shows.map((show) => {
-            const iconKey = show as keyof typeof showIcons;
-            return (
-              <button
-                key={show}
-                className={`inline-flex items-center gap-2 rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
-                  selectedShow === show
-                    ? "border-sky-600 bg-sky-600 text-white"
-                    : "border-slate-300 bg-white text-slate-700 hover:border-sky-500 hover:bg-sky-50"
-                }`}
-                onClick={() => handleShowChange(show)}
-                title={getShowName(show)}
-                disabled={isLoading}
-              >
-                {showIcons[iconKey]}
-                <span>{getShowName(show)}</span>
-              </button>
-            );
-          })}
+        <div className="text-sm text-slate-500">
+          {getShowName(selectedShow)} • {getDisplayDate()}
         </div>
-        <div className="relative  max-w-xs">
-          <input
-            type="date"
-            className="rounded-2xl border border-slate-300 bg-white py-3 pl-3 pr-3 text-slate-700 outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100"
-            value={selectedDate}
-            onChange={(e) => handleDateChange(e.target.value)}
-            title="בחר תאריך"
-          />
-        </div>
-      </div>
+      </div> */}
     </section>
   );
 }

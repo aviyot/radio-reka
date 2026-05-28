@@ -11,17 +11,13 @@ export default function LiveRadio({ radioUrl }: LiveRadioProps) {
     <section className="rounded-[2rem] bg-white shadow-xl ring-1 ring-slate-200 overflow-hidden">
       <div className="px-6 py-5 border-b border-slate-200">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-4">
-            <FiRadio className="h-7 w-7 text-sky-600" />
-            <div>
-              <div className="flex items-center gap-2">
-                <div className="text-lg font-bold">שידור חי</div>
-                <div className="flex items-center gap-2 text-sm text-slate-600">
-                  <FiClock className="h-5 w-5 text-slate-500" />
-                  <span>שעות שידור: 6-7 | 13-14 | 19-20</span>
-                </div>
-              </div>
-           
+          <div className="flex gap-2 text-center sm:items-start">
+            <div className="flex items-center gap-2 text-sky-600">
+              <FiRadio className="h-7 w-7 text-sky-600" />
+              <div className="text-lg font-bold">שידור חי</div>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-slate-600">
+              <span> 6-7 | 13-14 | 19-20</span>
             </div>
           </div>
         </div>
@@ -29,7 +25,7 @@ export default function LiveRadio({ radioUrl }: LiveRadioProps) {
 
       <div className="bg-slate-50 p-6">
         <audio
-          className="w-full min-h-[3rem]"
+          className="w-full min-h-12"
           controls
           src={radioUrl}
           preload="none"

@@ -23,15 +23,15 @@ export default function Header() {
   });
 
   return (
-    <header className="flex items-center justify-between gap-4 px-5 py-4 text-white shadow-lg bg-gradient-to-r from-emerald-500 via-orange-500 to-red-500">
-      <div className="flex flex-none items-center text-sm opacity-90">
+    <header className="flex items-center justify-between gap-4 px-5 py-4 text-white shadow-lg bg-linear-to-r from-emerald-500 via-orange-500 to-red-500">
+  {/*     <div className="flex flex-none items-center text-sm opacity-90">
         <div className=" flex flex-col items-center rounded-2xl border border-white/20 bg-white/10 px-3 py-2 text-right backdrop-blur-sm">
           <div className="mt-1 font-semibold text-white">{formattedTime}</div>
           <div>{formattedDate}</div>
         </div>
-      </div>
+      </div> */}
 
-      <div className="flex-1 min-w-0 flex justify-center">
+      <div className="flex-1 min-w-0 flex ">
         <div className="min-w-0 text-center">
           <div className="text-xl font-extrabold tracking-tight">
             רדיו רקע אמהרית
