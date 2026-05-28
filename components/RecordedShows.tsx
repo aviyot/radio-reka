@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import {
-  FiMusic,
   FiCalendar,
   FiClock,
   FiSun,
@@ -28,8 +27,30 @@ export default function RecordedShows({
 }: RecordedShowsProps) {
   const [selectedDate, setSelectedDate] = useState("2025-07-28");
   const [selectedShow, setSelectedShow] = useState(initialShow);
+  const [dialogDate, setDialogDate] = useState("2025-07-28");
+  const [dialogShow, setDialogShow] = useState(initialShow);
   const [isLoading, setIsLoading] = useState(false);
   const [userHasSelectedShow, setUserHasSelectedShow] = useState(false);
+  const [isShowDialogOpen, setIsShowDialogOpen] = useState(false);
+
+  const getLatestShowForDate = useCallback((dateValue: string) => {
+    const selectedDateObj = new Date(dateValue);
+    if (isNaN(selectedDateObj.getTime())) return "evenign-news-amharit";
+
+    const now = new Date();
+    const israelTime = new Date(
+      now.toLocaleString("en-US", { timeZone: "Asia/Jerusalem" }),
+    );
+    const currentHour = israelTime.getHours();
+    const isToday =
+      selectedDateObj.toDateString() === israelTime.toDateString();
+
+    if (!isToday) return "evenign-news-amharit";
+    if (currentHour >= 19) return "evenign-news-amharit";
+    if (currentHour >= 13) return "kan-amhari-noon";
+    if (currentHour >= 6) return "amharit";
+    return "evenign-news-amharit";
+  }, []);
 
   useEffect(() => {
     if (initialDate) {
@@ -48,6 +69,21 @@ export default function RecordedShows({
       setSelectedShow(initialShow);
     }
   }, [initialShow, selectedShow, userHasSelectedShow]);
+
+  useEffect(() => {
+    if (!selectedDate || userHasSelectedShow || initialShow) return;
+
+    const latestShow = getLatestShowForDate(selectedDate);
+    if (latestShow !== selectedShow) {
+      setSelectedShow(latestShow);
+    }
+  }, [
+    selectedDate,
+    selectedShow,
+    userHasSelectedShow,
+    initialShow,
+    getLatestShowForDate,
+  ]);
 
   const getAdjustedDate = useCallback(() => {
     if (!selectedDate) return selectedDate;
@@ -108,12 +144,6 @@ export default function RecordedShows({
     return `${day}.${month}.${year}`;
   }, [getAdjustedDate]);
 
-  const isShowingPreviousDay = useCallback(() => {
-    if (!selectedDate) return false;
-    const adjustedDate = getAdjustedDate();
-    return adjustedDate !== selectedDate;
-  }, [selectedDate, getAdjustedDate]);
-
   const iframeUrl = `https://omny.fm/shows/${selectedShow}/${getIframeDate()}/embed`;
 
   const getShowName = (show: string) => {
@@ -129,21 +159,30 @@ export default function RecordedShows({
     }
   };
 
-  const handleShowChange = (show: string) => {
-    if (show !== selectedShow) {
+  const openSelectionDialog = () => {
+    setDialogDate(selectedDate);
+    setDialogShow(selectedShow);
+    setIsShowDialogOpen(true);
+  };
+
+  const applyDialogSelection = () => {
+    if (!dialogDate) {
+      setIsShowDialogOpen(false);
+      return;
+    }
+
+    const hasChanges =
+      dialogDate !== selectedDate || dialogShow !== selectedShow;
+
+    if (hasChanges) {
       setIsLoading(true);
-      setSelectedShow(show);
+      setSelectedDate(dialogDate);
+      setSelectedShow(dialogShow);
       setUserHasSelectedShow(true);
       setTimeout(() => setIsLoading(false), 500);
     }
-  };
 
-  const handleDateChange = (date: string) => {
-    if (date !== selectedDate) {
-      setIsLoading(true);
-      setSelectedDate(date);
-      setTimeout(() => setIsLoading(false), 500);
-    }
+    setIsShowDialogOpen(false);
   };
 
   const shows = ["amharit", "kan-amhari-noon", "evenign-news-amharit"];
@@ -164,37 +203,8 @@ export default function RecordedShows({
             <FiCalendar className="h-5 w-5 text-slate-500" />
             <div className="flex items-center gap-2">
               <div className="font-bold">תוכניות מוקלטות</div>
-              <div className="relative  max-w-xs">
-                <input
-                  type="date"
-                  className="rounded-2xl border border-slate-300 bg-white py-1 px-2 text-slate-700 outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100"
-                  value={selectedDate}
-                  onChange={(e) => handleDateChange(e.target.value)}
-                  title="בחר תאריך"
-                />
-              </div>
+              <div className="text-sm text-slate-500">{getDisplayDate()}</div>
             </div>
-          </div>
-          <div className="flex justify-between flex-wrap gap-1">
-            {shows.map((show) => {
-              const iconKey = show as keyof typeof showIcons;
-              return (
-                <button
-                  key={show}
-                  className={`flex items-center justify-around gap-2 rounded-2xl border px-2 py-2 text-sm font-semibold transition ${
-                    selectedShow === show
-                      ? "border-sky-600 bg-sky-600 text-white"
-                      : "border-slate-300 bg-white text-slate-700 hover:border-sky-500 hover:bg-sky-50"
-                  }`}
-                  onClick={() => handleShowChange(show)}
-                  title={getShowName(show)}
-                  disabled={isLoading}
-                >
-                  {showIcons[iconKey]}
-                  <span>{getShowName(show)}</span>
-                </button>
-              );
-            })}
           </div>
         </div>
       </div>
@@ -228,7 +238,101 @@ export default function RecordedShows({
           allow="autoplay; encrypted-media"
         />
       </div>
-{/* 
+
+      <div className="border-t border-slate-200 bg-white px-6 py-4">
+        <div className="flex justify-start flex-wrap gap-1">
+          <button
+            type="button"
+            className="flex items-center justify-around gap-2 rounded-2xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-sky-500 hover:bg-sky-50"
+            onClick={openSelectionDialog}
+            title="בחר תוכנית ותאריך"
+            disabled={isLoading}
+          >
+            {showIcons[selectedShow as keyof typeof showIcons]}
+            <span>
+              בחירה: {getShowName(selectedShow)} • {getDisplayDate()}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {isShowDialogOpen && (
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-slate-900/50 p-4">
+          <div className="w-full max-w-sm rounded-3xl bg-white p-5 shadow-2xl ring-1 ring-slate-200">
+            <div className="mb-4 text-center">
+              <div className="text-lg font-bold text-slate-900">
+                בחירת תוכנית ותאריך
+              </div>
+              <div className="text-sm text-slate-500">
+                נבחר כרגע: {getShowName(selectedShow)} • {getDisplayDate()}
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="recorded-date-picker"
+                className="mb-1 block text-sm font-semibold text-slate-700"
+              >
+                תאריך
+              </label>
+              <input
+                id="recorded-date-picker"
+                type="date"
+                className="w-full rounded-2xl border border-slate-300 bg-white py-2 px-3 text-slate-700 outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100"
+                style={{ direction: "ltr", textAlign: "left" }}
+                value={dialogDate}
+                onChange={(e) => setDialogDate(e.target.value)}
+                title="בחר תאריך"
+              />
+            </div>
+
+            <div className="space-y-2">
+              {shows.map((show) => {
+                const iconKey = show as keyof typeof showIcons;
+                const isActive = dialogShow === show;
+                return (
+                  <button
+                    key={show}
+                    type="button"
+                    className={`w-full flex items-center justify-between rounded-2xl border px-3 py-3 text-sm font-semibold transition ${
+                      isActive
+                        ? "border-sky-600 bg-sky-600 text-white"
+                        : "border-slate-300 bg-white text-slate-700 hover:border-sky-500 hover:bg-sky-50"
+                    }`}
+                    onClick={() => setDialogShow(show)}
+                    title={getShowName(show)}
+                    disabled={isLoading}
+                  >
+                    <span className="flex items-center gap-2">
+                      {showIcons[iconKey]}
+                      {getShowName(show)}
+                    </span>
+                    {isActive && <span>✓</span>}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                type="button"
+                className="rounded-xl border border-sky-600 bg-sky-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-700"
+                onClick={applyDialogSelection}
+              >
+                החל
+              </button>
+              <button
+                type="button"
+                className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                onClick={() => setIsShowDialogOpen(false)}
+              >
+                סגירה
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* 
       <div className="flex  gap-3 border-t border-slate-200 bg-slate-50 p-4 flex-row items-center justify-between">
         <div className="text-sm text-slate-500">
           {getShowName(selectedShow)} • {getDisplayDate()}
