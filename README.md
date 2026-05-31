@@ -21,7 +21,7 @@ Make sure you have Node.js 18+ installed on your system.
 1. Clone the repository
 2. Install dependencies:
    ```bash
-   npm install
+   pnpm install
    ```
 
 ### Development
@@ -29,7 +29,7 @@ Make sure you have Node.js 18+ installed on your system.
 Run the development server:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -39,7 +39,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 Build the application for production:
 
 ```bash
-npm run build
+pnpm build
 ```
 
 ### Start Production Server
@@ -47,7 +47,7 @@ npm run build
 Start the production server:
 
 ```bash
-npm start
+pnpm start
 ```
 
 ## Project Structure
@@ -83,17 +83,17 @@ npm start
 - **צהריים (Noon)**: 14:00 - 20:00  
 - **ערב (Evening)**: 20:00 - 23:59oject setup
 ```
-npm install
+pnpm install
 ```
 
 ### Compiles and hot-reloads for development
 ```
-npm run serve
+pnpm serve
 ```
 
 ### Compiles and minifies for production
 ```
-npm run build
+pnpm build
 ```
 
 ### Customize configuration
